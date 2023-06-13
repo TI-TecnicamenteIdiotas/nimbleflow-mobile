@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/hub_handlers.dart';
+import 'package:nimbleflow/home/orders/orders_page.dart';
+import 'package:nimbleflow/home/products/products_page.dart';
 import 'package:nimbleflow/home/tables/tables_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,8 +33,8 @@ class _HomePageState extends State<HomePage> {
         index: _bottomNavigationBarSelectedIndex,
         children: const [
           TablesPage(),
-          TablesPage(),
-          TablesPage(),
+          OrdersPage(),
+          ProductsPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
