@@ -65,6 +65,7 @@ class _TablesPageState extends State<TablesPage> {
   void dispose() {
     super.dispose();
     HubService.mainHubConnection.off(kTableCreatedEventName);
+    HubService.mainHubConnection.off(kTableUpdatedEventName);
   }
 
   @override

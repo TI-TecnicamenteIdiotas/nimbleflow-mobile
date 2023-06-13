@@ -61,6 +61,12 @@ class _TablePageState extends State<TablePage> {
   }
 
   @override
+  void didUpdateWidget(covariant TablePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _accountableTextEditingController.text = widget.table.accountable;
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _accountableTextEditingController.dispose();
