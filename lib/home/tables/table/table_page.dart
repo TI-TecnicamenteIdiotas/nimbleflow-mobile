@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nimbleflow/home/tables/widgets/accountable_text_form_field_widget.dart';
 import 'package:nimbleflow/shared/models/table/table_model.dart';
 import 'package:nimbleflow/shared/models/table/update_table_dto.dart';
 import 'package:nimbleflow/shared/services/table_service.dart';
-import 'package:nimbleflow/shared/widgets/switch_with_icon_widget.dart';
+
+import '../widgets/is_paid_widget.dart';
+import '../../../shared/widgets/floating_action_button_widget.dart';
 
 class TablePage extends StatefulWidget {
   final TableModel table;
@@ -22,23 +25,26 @@ class _TablePageState extends State<TablePage> {
   late final TableModel _table;
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _accountableTextEditingController;
+  late bool _tempIsFullyPaid;
   bool _isLoading = false;
 
   void _setIsLoading(bool value) => setState(() => _isLoading = value);
 
-  void _handleSwitchTap(bool value) {
+  void _handleSwitchChange(bool value) {
     widget.setParentState(() {
       setState(() {
-        widget.table.isFullyPaid = value;
+        _tempIsFullyPaid = value;
       });
     });
   }
 
-  void _handleUpdate() async {
+  void _handleSave() async {
     _setIsLoading(true);
 
     if (!_formKey.currentState!.validate()) return;
-    _table.accountable = _accountableTextEditingController.text;
+    _table
+      ..accountable = _accountableTextEditingController.text
+      ..isFullyPaid = _tempIsFullyPaid;
 
     await TableService.httpPutTable(UpdateTableDto(
       id: _table.id,
@@ -51,6 +57,22 @@ class _TablePageState extends State<TablePage> {
     });
   }
 
+  void _closePage() {
+    Navigator.pop(context);
+  }
+
+  void _handleDelete() async {
+    _setIsLoading(true);
+
+    await TableService.httpDeleteTable(_table.id);
+
+    widget.setParentState(() {
+      _setIsLoading(false);
+    });
+
+    _closePage();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,12 +80,14 @@ class _TablePageState extends State<TablePage> {
     _accountableTextEditingController = TextEditingController(
       text: widget.table.accountable,
     );
+    _tempIsFullyPaid = widget.table.isFullyPaid;
   }
 
   @override
   void didUpdateWidget(covariant TablePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _accountableTextEditingController.text = widget.table.accountable;
+    _tempIsFullyPaid = widget.table.isFullyPaid;
   }
 
   @override
@@ -76,61 +100,45 @@ class _TablePageState extends State<TablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_table.accountable)),
-      body: Center(
-        child: Column(
-          children: [
-            Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.disabled,
-              child: Padding(
+      body: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  controller: _accountableTextEditingController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.person),
-                    labelText: 'Nome do responsável',
-                    hintText: 'Insira um nome',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Insira um nome";
-                    }
-
-                    if (value.length > 256) {
-                      return "O nome não pode ser maior que 256";
-                    }
-
-                    return null;
-                  },
+                child: AccountableTextFormFieldWidget(
+                  textEditingController: _accountableTextEditingController,
                 ),
               ),
-            ),
-            SwitchWithIconWidget(
-              title: "Está paga?",
-              initialValue: _table.isFullyPaid,
-              callback: _handleSwitchTap,
-              prefixIcon: const Icon(Icons.attach_money_rounded),
-            ),
-          ],
+              IsPaidWidget(
+                initialValue: _tempIsFullyPaid,
+                onChanged: _handleSwitchChange,
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: _isLoading ? null : _handleUpdate,
-        disabledElevation: 0,
-        child: Wrap(
-          direction: Axis.vertical,
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 4,
-          children: _isLoading
-              ? const [
-                  CircularProgressIndicator(),
-                ]
-              : const [
-                  Icon(Icons.save_rounded),
-                  Text("Atualizar"),
-                ],
-        ),
+      floatingActionButton: Wrap(
+        direction: Axis.vertical,
+        spacing: 24,
+        children: [
+          FloatingActionButtonWidget(
+            heroTag: "save",
+            icon: const Icon(Icons.save_rounded),
+            iconText: "Salvar",
+            isLoading: _isLoading,
+            onPressed: _handleSave,
+          ),
+          FloatingActionButtonWidget(
+            heroTag: "delete",
+            icon: const Icon(Icons.delete_rounded),
+            iconText: "Deletar",
+            isLoading: _isLoading,
+            onPressed: _handleDelete,
+          ),
+        ],
       ),
     );
   }

@@ -1,0 +1,1 @@
+const int kMaxAccountableLength = 256;

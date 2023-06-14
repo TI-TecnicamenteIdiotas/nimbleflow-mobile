@@ -7,3 +7,5 @@ const int kHubRetryConnectionCount = 4;
 
 const String kTableCreatedEventName = "TableCreated";
 const String kTableUpdatedEventName = "TableUpdated";
+const String kTableDeletedEventName = "TableDeleted";
+const String kManyTablesDeletedEventName = "ManyTablesDeleted";

@@ -61,3 +61,56 @@ Future<void> subscribeToTableUpdated(
     });
   });
 }
+
+Future<void> subscribeToTableDeleted(
+  List<TableModel> tables,
+  void Function(void Function()) setState,
+) async {
+  HubService.mainHubConnection.on(kTableDeletedEventName, (arguments) async {
+    var json = jsonDecode(arguments![0]);
+    var tableToDeleteId = json["id"] as String;
+
+    tables.removeWhere(
+      (element) => element.id == tableToDeleteId,
+    );
+
+    await Storage.storage.delete(
+      "table",
+      where: "id = ?",
+      whereArgs: [tableToDeleteId],
+    );
+
+    setState(() {});
+  });
+}
+
+Future<void> subscribeToManyTablesDeleted(
+  List<TableModel> tables,
+  void Function(void Function()) setState,
+) async {
+  HubService.mainHubConnection.on(kManyTablesDeletedEventName,
+      (arguments) async {
+    var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
+    var tablesToDeleteIds = List.from(json["ids"]);
+
+    tables.removeWhere(
+      (element) => tablesToDeleteIds.contains(element.id),
+    );
+
+    await Storage.storage.transaction((txn) async {
+      var batch = txn.batch();
+
+      for (var id in tablesToDeleteIds) {
+        batch.delete(
+          "table",
+          where: "id = ?",
+          whereArgs: [id],
+        );
+      }
+
+      await batch.commit(noResult: true);
+    });
+
+    setState(() {});
+  });
+}

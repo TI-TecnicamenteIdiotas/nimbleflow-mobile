@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/tables/init_tables.dart';
+import 'package:nimbleflow/home/tables/table/create_table_page.dart';
 import 'package:nimbleflow/home/tables/table/table_page.dart';
 import 'package:nimbleflow/shared/constants/hub_constants.dart';
+import 'package:nimbleflow/shared/widgets/floating_action_button_widget.dart';
 import 'package:nimbleflow/shared/widgets/loading_dialog_widget.dart';
 
 import '../../shared/models/table/table_model.dart';
@@ -17,32 +19,63 @@ class TablesPage extends StatefulWidget {
 
 class _TablesPageState extends State<TablesPage> {
   final GlobalKey<NavigatorState> _subPageNavigatorKey = GlobalKey();
-
   final int _page = 0;
-  final int _limit = 12;
+  final int _limit = 8;
   final bool _includeDeleted = false;
   bool _isLoading = false;
+  bool _canShowAddTableButton = true;
   final _tables = List<TableModel>.empty(growable: true);
 
   void _setIsLoading(bool value) => setState(() => _isLoading = value);
 
-  void _handleOnTapListItem(TableModel table) {
-    Navigator.push(
+  void _setCanShowAddTableButton(bool value) {
+    setState(() => _canShowAddTableButton = value);
+  }
+
+  void _handleFloatingActionButtonTap() async {
+    _setCanShowAddTableButton(false);
+    await Navigator.push(
       _subPageNavigatorKey.currentContext ?? context,
       MaterialPageRoute(
-        builder: (_) => TablePage(
-          table: table,
-          setParentState: setState,
-        ),
+        builder: (_) => const CreateTablePage(),
       ),
     );
+    _setCanShowAddTableButton(true);
+  }
+
+  void _handleOnTapListItem(TableModel table) async {
+    _setCanShowAddTableButton(false);
+    await Navigator.push(
+      _subPageNavigatorKey.currentContext ?? context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return TablePage(
+            table: table,
+            setParentState: setState,
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final tween = Tween(begin: 1, end: 0);
+          animation.drive(tween);
+
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+    );
+    _setCanShowAddTableButton(true);
   }
 
   Widget buildListItem(TableModel table) {
-    return ListTile(
+    return Card(
       key: ValueKey<String>(table.id),
-      title: Text(table.accountable),
-      onTap: () => _handleOnTapListItem(table),
+      elevation: 2,
+      child: ListTile(
+        title: Text(table.accountable),
+        onTap: () => _handleOnTapListItem(table),
+      ),
     );
   }
 
@@ -58,14 +91,19 @@ class _TablesPageState extends State<TablesPage> {
     super.initState();
     subscribeToTableCreated(_limit, _tables, setState);
     subscribeToTableUpdated(_tables, setState);
+    subscribeToManyTablesDeleted(_tables, setState);
+    subscribeToTableDeleted(_tables, setState);
     initTables(_tables, _page, _limit, _includeDeleted, _setIsLoading);
   }
 
   @override
   void dispose() {
     super.dispose();
-    HubService.mainHubConnection.off(kTableCreatedEventName);
-    HubService.mainHubConnection.off(kTableUpdatedEventName);
+    HubService.mainHubConnection
+      ..off(kTableCreatedEventName)
+      ..off(kTableUpdatedEventName)
+      ..off(kManyTablesDeletedEventName)
+      ..off(kTableDeletedEventName);
   }
 
   @override
@@ -83,6 +121,15 @@ class _TablesPageState extends State<TablesPage> {
           ),
         ),
       ),
+      floatingActionButton: _canShowAddTableButton
+          ? FloatingActionButtonWidget(
+              heroTag: "create",
+              isLoading: _isLoading,
+              onPressed: _handleFloatingActionButtonTap,
+              icon: const Icon(Icons.add),
+              iconText: "Nova mesa",
+            )
+          : null,
     );
   }
 }

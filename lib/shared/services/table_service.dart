@@ -13,9 +13,11 @@ abstract class TableService {
     "api/v1/table",
   ].join("/");
 
-  static Future<PaginatedTableModel> httpGetPaginated(int page,
-      int limit,
-      bool includeDeleted,) async {
+  static Future<PaginatedTableModel> httpGetPaginated(
+    int page,
+    int limit,
+    bool includeDeleted,
+  ) async {
     var uri = Uri.parse(
       "$_tableServiceUrl?page=$page&limit=$limit&includeDeleted=$includeDeleted",
     );
@@ -36,21 +38,30 @@ abstract class TableService {
     return PaginatedTableModel.fromJson(jsonDecode(response.body));
   }
 
-  static Future<bool> httpPutTable(UpdateTableDto tableDto) async {
+  static Future httpPutTable(UpdateTableDto tableDto) async {
     var uri = Uri.parse("$_tableServiceUrl/${tableDto.id}");
 
-    var response = await http.put(
+    await http.put(
       uri,
       body: jsonEncode(tableDto),
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },
     );
+  }
 
-    if (response.statusCode != HttpStatus.ok) {
-      return false;
-    }
+  static Future httpDeleteManyTables(List<String> tablesIds) async {
+    var uri = Uri.parse("$_tableServiceUrl/by-ids");
 
-    return true;
+    await http.delete(
+      uri,
+      body: jsonEncode(tablesIds),
+    );
+  }
+
+  static Future httpDeleteTable(String tableId) async {
+    var uri = Uri.parse("$_tableServiceUrl/$tableId");
+
+    await http.delete(uri);
   }
 }
