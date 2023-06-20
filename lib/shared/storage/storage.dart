@@ -69,6 +69,13 @@ class Storage {
         );
       },
       version: 1,
+      onOpen: (db) async {
+        await db.delete("category");
+        await db.delete("product");
+        await db.delete("table");
+        await db.delete("order");
+        await db.delete("order_product");
+      },
     );
   }
 }

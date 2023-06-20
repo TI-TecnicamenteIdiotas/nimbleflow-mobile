@@ -40,4 +40,9 @@ class TableModel {
       isFullyPaid: json["isFullyPaid"] == 1 ? true : false,
     );
   }
+
+  @override
+  String toString() {
+    return "TableModel: $id, $accountable, $isFullyPaid";
+  }
 }

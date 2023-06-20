@@ -8,10 +8,10 @@ import '../../../shared/constants/hub_constants.dart';
 import '../../../shared/models/table/table_model.dart';
 import '../../../shared/services/hub_service.dart';
 
-Future<void> subscribeToTableCreated(
+void subscribeToTableCreated(
   List<TableModel> tables,
   void Function(void Function()) setState,
-) async {
+) {
   HubService.mainHubConnection.on(kTableCreatedEventName, (arguments) async {
     if (tables.length == kListOfTablesLimit) return;
 
@@ -28,10 +28,10 @@ Future<void> subscribeToTableCreated(
   });
 }
 
-Future<void> subscribeToTableUpdated(
+void subscribeToTableUpdated(
   List<TableModel> tables,
   void Function(void Function()) setState,
-) async {
+) {
   HubService.mainHubConnection.on(kTableUpdatedEventName, (arguments) async {
     var json = jsonDecode(arguments![0]);
     var tableModel = TableModel.fromJson(json);
@@ -60,10 +60,10 @@ Future<void> subscribeToTableUpdated(
   });
 }
 
-Future<void> subscribeToTableDeleted(
+void subscribeToTableDeleted(
   List<TableModel> tables,
   void Function(void Function()) setState,
-) async {
+) {
   HubService.mainHubConnection.on(kTableDeletedEventName, (arguments) async {
     var json = jsonDecode(arguments![0]);
     var tableToDeleteId = json["id"] as String;
@@ -82,10 +82,10 @@ Future<void> subscribeToTableDeleted(
   });
 }
 
-Future<void> subscribeToManyTablesDeleted(
+void subscribeToManyTablesDeleted(
   List<TableModel> tables,
   void Function(void Function()) setState,
-) async {
+) {
   HubService.mainHubConnection.on(kManyTablesDeletedEventName,
       (arguments) async {
     var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
