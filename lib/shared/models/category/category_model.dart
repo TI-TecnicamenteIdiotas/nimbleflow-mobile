@@ -1,22 +1,18 @@
-class CategoryModel {
-  final String id;
-  String title;
-  int? colorTheme;
-  int? categoryIcon;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CategoryModel({
-    required this.id,
-    required this.title,
-    this.colorTheme,
-    this.categoryIcon,
-  });
+part "category_model.freezed.dart";
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
-      id: json["id"],
-      title: json["title"],
-      colorTheme: json["colorTheme"],
-      categoryIcon: json["categoryIcon"],
-    );
-  }
+part "category_model.g.dart";
+
+@freezed
+class CategoryModel with _$CategoryModel {
+  const factory CategoryModel({
+    required String id,
+    required String title,
+    int? colorTheme,
+    int? categoryIcon,
+  }) = _CategoryModel;
+
+  factory CategoryModel.fromJson(Map<String, Object?> json) =>
+      _$CategoryModelFromJson(json);
 }

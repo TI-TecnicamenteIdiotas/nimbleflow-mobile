@@ -1,37 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/hub_handlers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nimbleflow/home/orders/orders_page.dart';
 import 'package:nimbleflow/home/categories/categories_page.dart';
 import 'package:nimbleflow/home/products/products_page.dart';
+import 'package:nimbleflow/home/providers/hub_handlers.dart';
+import 'package:nimbleflow/home/tables/providers/navigation_bar.dart';
+import 'package:nimbleflow/home/tables/providers/paginated_tables.dart';
+import 'package:nimbleflow/home/tables/providers/tables_hub.dart';
 import 'package:nimbleflow/home/tables/tables_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  var _bottomNavigationBarSelectedIndex = 0;
-
-  void _onBottomNavigationBarSelected(int index) {
-    setState(() => _bottomNavigationBarSelectedIndex = index);
-  }
-
+class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    handleHubConnectionClosed(context);
-    handleHubReconnection(context);
-    handleHubReconnected(context);
+    ref.read(hubHandlersProvider)
+      ..handleHubConnectionClosed(context)
+      ..handleHubReconnection(context)
+      ..handleHubReconnected(context);
+
+    var paginatedTables = ref.read(paginatedTablesProvider.notifier);
+    ref.read(tablesHubProvider)
+      ..subscribeToTableCreated(paginatedTables.addTableFromHub)
+      ..subscribeToTableUpdated(paginatedTables.updateTableFromHub)
+      ..subscribeToManyTablesDeleted(paginatedTables.deleteManyTablesFromHub)
+      ..subscribeToTableDeleted(paginatedTables.deleteTableFromHub);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    ref.read(tablesHubProvider).dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var navigationBarIndex = ref.watch(navigationBarProvider);
+
     return Scaffold(
       body: IndexedStack(
-        index: _bottomNavigationBarSelectedIndex,
+        index: navigationBarIndex,
         children: const [
           TablesPage(),
           OrdersPage(),
@@ -42,8 +56,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         elevation: 4,
         type: BottomNavigationBarType.fixed,
-        currentIndex: _bottomNavigationBarSelectedIndex,
-        onTap: _onBottomNavigationBarSelected,
+        currentIndex: navigationBarIndex,
+        onTap: ref.read(navigationBarProvider.notifier).setNavigationBar,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.table_bar_rounded),

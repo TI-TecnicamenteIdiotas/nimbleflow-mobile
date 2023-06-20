@@ -1,42 +1,30 @@
-class TableModel {
-  final String id;
-  String accountable;
-  bool isFullyPaid;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  TableModel({
-    required this.id,
-    required this.accountable,
-    required this.isFullyPaid,
-  });
+part "table_model.g.dart";
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "accountable": accountable,
-      "isFullyPaid": isFullyPaid,
-    };
-  }
+part "table_model.freezed.dart";
 
-  Map<String, dynamic> toStorageMap() {
-    return {
-      "id": id,
-      "accountable": accountable,
-      "isFullyPaid": isFullyPaid ? 1 : 0,
-    };
-  }
+@freezed
+class TableModel with _$TableModel {
+  const factory TableModel({
+    required String id,
+    required String accountable,
+    required bool isFullyPaid,
+  }) = _TableModel;
 
-  factory TableModel.fromJson(Map<String, dynamic> json) {
+  factory TableModel.fromJson(Map<String, Object?> json) =>
+      _$TableModelFromJson(json);
+
+  static toStorageMap(TableModel tableModel) => {
+        "id": tableModel.id,
+        "accountable": tableModel.accountable,
+        "isFullyPaid": tableModel.isFullyPaid ? 1 : 0,
+      };
+
+  factory TableModel.fromStorage(Map<String, Object?> json) {
     return TableModel(
-      id: json["id"],
-      accountable: json["accountable"],
-      isFullyPaid: json["isFullyPaid"],
-    );
-  }
-
-  factory TableModel.fromStorage(Map<String, dynamic> json) {
-    return TableModel(
-      id: json["id"],
-      accountable: json["accountable"],
+      id: json["id"] as String,
+      accountable: json["accountable"] as String,
       isFullyPaid: json["isFullyPaid"] == 1 ? true : false,
     );
   }

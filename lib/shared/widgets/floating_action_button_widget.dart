@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nimbleflow/shared/providers/is_loading.dart';
 
-class FloatingActionButtonWidget extends StatelessWidget {
+class FloatingActionButtonWidget extends ConsumerWidget {
   final String heroTag;
-  final bool isLoading;
   final void Function()? onPressed;
   final Icon icon;
   final String iconText;
@@ -10,27 +11,18 @@ class FloatingActionButtonWidget extends StatelessWidget {
   const FloatingActionButtonWidget({
     super.key,
     required this.heroTag,
-    required this.isLoading,
     required this.onPressed,
     required this.icon,
     required this.iconText,
   });
 
-  List<Widget> _buildChildren() {
-    if (isLoading) {
-      return const [
-        CircularProgressIndicator(),
-      ];
-    }
-
-    return [
-      icon,
-      Text(iconText),
-    ];
-  }
+  List<Widget> _buildChildren(bool isLoading) =>
+      isLoading ? const [CircularProgressIndicator()] : [icon, Text(iconText)];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var isLoading = ref.watch(isLoadingProvider);
+
     return FloatingActionButton.large(
       heroTag: heroTag,
       onPressed: isLoading ? null : onPressed,
@@ -39,7 +31,7 @@ class FloatingActionButtonWidget extends StatelessWidget {
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 4,
-        children: _buildChildren(),
+        children: _buildChildren(isLoading),
       ),
     );
   }

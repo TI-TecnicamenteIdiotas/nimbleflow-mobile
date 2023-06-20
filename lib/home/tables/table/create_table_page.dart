@@ -5,9 +5,6 @@ class CreateTablePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: "create",
-      child: const Placeholder(),
-    );
+    return const Placeholder();
   }
 }

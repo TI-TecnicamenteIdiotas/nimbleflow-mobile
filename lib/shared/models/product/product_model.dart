@@ -1,31 +1,21 @@
-class ProductModel {
-  final String id;
-  String title;
-  String? description;
-  num price;
-  String? imageUrl;
-  bool isFavorite;
-  String categoryId;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ProductModel({
-    required this.id,
-    required this.title,
-    this.description,
-    required this.price,
-    this.imageUrl,
-    required this.isFavorite,
-    required this.categoryId,
-  });
+part "product_model.freezed.dart";
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json["id"],
-      title: json["title"],
-      description: json["description"],
-      price: json["price"],
-      imageUrl: json["imageUrl"],
-      isFavorite: json["isFavorite"],
-      categoryId: json["categoryId"],
-    );
-  }
+part "product_model.g.dart";
+
+@freezed
+class ProductModel with _$ProductModel {
+  const factory ProductModel({
+    required String id,
+    required String title,
+    String? description,
+    required num price,
+    String? imageUrl,
+    required bool isFavorite,
+    required String categoryId,
+  }) = _ProductModel;
+
+  factory ProductModel.fromJson(Map<String, Object?> json) =>
+      _$ProductModelFromJson(json);
 }

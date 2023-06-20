@@ -1,19 +1,17 @@
-class UpdateTableDto {
-  final String id;
-  String? accountable;
-  bool? isFullyPaid;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  UpdateTableDto({
-    required this.id,
-    this.accountable,
-    this.isFullyPaid,
-  });
+part "update_table_dto.freezed.dart";
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "accountable": accountable,
-      "isFullyPaid": isFullyPaid,
-    };
-  }
+part "update_table_dto.g.dart";
+
+@freezed
+class UpdateTableDto with _$UpdateTableDto {
+  const factory UpdateTableDto({
+    required String id,
+    String? accountable,
+    bool? isFullyPaid,
+  }) = _UpdateTableDto;
+
+  factory UpdateTableDto.fromJson(Map<String, Object?> json) =>
+      _$UpdateTableDtoFromJson(json);
 }
