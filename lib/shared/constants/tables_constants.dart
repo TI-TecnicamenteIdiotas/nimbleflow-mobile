@@ -1,0 +1,1 @@
+const int kListOfTablesLimit = 12;

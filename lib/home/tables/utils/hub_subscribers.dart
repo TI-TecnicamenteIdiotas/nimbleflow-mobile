@@ -1,21 +1,19 @@
 import 'dart:convert';
 
+import 'package:nimbleflow/shared/constants/tables_constants.dart';
 import 'package:nimbleflow/shared/storage/storage.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../shared/constants/hub_constants.dart';
-import '../../shared/models/table/table_model.dart';
-import '../../shared/services/hub_service.dart';
+import '../../../shared/constants/hub_constants.dart';
+import '../../../shared/models/table/table_model.dart';
+import '../../../shared/services/hub_service.dart';
 
 Future<void> subscribeToTableCreated(
-  int limit,
   List<TableModel> tables,
   void Function(void Function()) setState,
 ) async {
   HubService.mainHubConnection.on(kTableCreatedEventName, (arguments) async {
-    if (tables.length == limit) {
-      return;
-    }
+    if (tables.length == kListOfTablesLimit) return;
 
     var json = jsonDecode(arguments![0]);
     var tableModel = TableModel.fromJson(json);

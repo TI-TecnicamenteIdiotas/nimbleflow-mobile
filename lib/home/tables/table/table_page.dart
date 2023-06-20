@@ -1,107 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/tables/widgets/accountable_text_form_field_widget.dart';
+import 'package:nimbleflow/home/tables/widgets/buttons/delete_table_button.dart';
 import 'package:nimbleflow/shared/models/table/table_model.dart';
 import 'package:nimbleflow/shared/models/table/update_table_dto.dart';
 import 'package:nimbleflow/shared/services/table_service.dart';
 
+import '../widgets/buttons/save_table_button.dart';
 import '../widgets/is_paid_widget.dart';
-import '../../../shared/widgets/floating_action_button_widget.dart';
 
 class TablePage extends StatefulWidget {
   final TableModel table;
-  final void Function(void Function()) setParentState;
 
-  const TablePage({
-    super.key,
-    required this.table,
-    required this.setParentState,
-  });
+  const TablePage(this.table, {super.key});
 
   @override
   State<TablePage> createState() => _TablePageState();
 }
 
 class _TablePageState extends State<TablePage> {
-  late final TableModel _table;
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _accountableTextEditingController;
-  late bool _tempIsFullyPaid;
-  bool _isLoading = false;
+  late final TableModel table;
 
-  void _setIsLoading(bool value) => setState(() => _isLoading = value);
+  final formKey = GlobalKey<FormState>();
+  final accountableTextEditingController = TextEditingController();
 
-  void _handleSwitchChange(bool value) {
-    widget.setParentState(() {
-      setState(() {
-        _tempIsFullyPaid = value;
-      });
-    });
-  }
+  void setIsFullyPaid(bool value) => setState(() => table.isFullyPaid = value);
 
-  void _handleSave() async {
-    _setIsLoading(true);
-
-    if (!_formKey.currentState!.validate()) return;
-    _table
-      ..accountable = _accountableTextEditingController.text
-      ..isFullyPaid = _tempIsFullyPaid;
+  Future<void> save() async {
+    if (!formKey.currentState!.validate()) return;
+    table.accountable = accountableTextEditingController.text;
 
     await TableService.httpPutTable(UpdateTableDto(
-      id: _table.id,
-      accountable: _table.accountable,
-      isFullyPaid: _table.isFullyPaid,
+      id: table.id,
+      accountable: table.accountable,
+      isFullyPaid: table.isFullyPaid,
     ));
-
-    widget.setParentState(() {
-      _setIsLoading(false);
-    });
   }
 
-  void _closePage() {
-    Navigator.pop(context);
-  }
-
-  void _handleDelete() async {
-    _setIsLoading(true);
-
-    await TableService.httpDeleteTable(_table.id);
-
-    widget.setParentState(() {
-      _setIsLoading(false);
-    });
-
-    _closePage();
+  Future<void> delete() async {
+    await TableService.httpDeleteTable(table.id);
   }
 
   @override
   void initState() {
     super.initState();
-    _table = widget.table;
-    _accountableTextEditingController = TextEditingController(
-      text: widget.table.accountable,
+    table = TableModel(
+      id: widget.table.id,
+      accountable: widget.table.accountable,
+      isFullyPaid: widget.table.isFullyPaid,
     );
-    _tempIsFullyPaid = widget.table.isFullyPaid;
+
+    accountableTextEditingController.text = table.accountable;
   }
 
   @override
   void didUpdateWidget(covariant TablePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _accountableTextEditingController.text = widget.table.accountable;
-    _tempIsFullyPaid = widget.table.isFullyPaid;
+    table
+      ..accountable = widget.table.accountable
+      ..isFullyPaid = widget.table.isFullyPaid;
+
+    accountableTextEditingController.text = table.accountable;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _accountableTextEditingController.dispose();
+    accountableTextEditingController.dispose();
+    formKey.currentState?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_table.accountable)),
+      appBar: AppBar(title: const SizedBox.shrink()),
       body: Form(
-        key: _formKey,
+        key: formKey,
         autovalidateMode: AutovalidateMode.disabled,
         child: Center(
           child: Column(
@@ -109,12 +82,12 @@ class _TablePageState extends State<TablePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: AccountableTextFormFieldWidget(
-                  textEditingController: _accountableTextEditingController,
+                  textEditingController: accountableTextEditingController,
                 ),
               ),
               IsPaidWidget(
-                initialValue: _tempIsFullyPaid,
-                onChanged: _handleSwitchChange,
+                initialValue: table.isFullyPaid,
+                onChanged: setIsFullyPaid,
               ),
             ],
           ),
@@ -124,20 +97,8 @@ class _TablePageState extends State<TablePage> {
         direction: Axis.vertical,
         spacing: 24,
         children: [
-          FloatingActionButtonWidget(
-            heroTag: "save",
-            icon: const Icon(Icons.save_rounded),
-            iconText: "Salvar",
-            isLoading: _isLoading,
-            onPressed: _handleSave,
-          ),
-          FloatingActionButtonWidget(
-            heroTag: "delete",
-            icon: const Icon(Icons.delete_rounded),
-            iconText: "Deletar",
-            isLoading: _isLoading,
-            onPressed: _handleDelete,
-          ),
+          SaveTableButton(onPressed: save),
+          DeleteTableButton(onPressed: delete),
         ],
       ),
     );

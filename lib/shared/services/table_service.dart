@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:nimbleflow/shared/constants/tables_constants.dart';
+import 'package:nimbleflow/shared/models/table/create_table_dto.dart';
 import 'package:nimbleflow/shared/models/table/paginated_table_model.dart';
 
 import '../constants/http_constants.dart';
@@ -13,14 +15,23 @@ abstract class TableService {
     "api/v1/table",
   ].join("/");
 
-  static Future<PaginatedTableModel> httpGetPaginated(
-    int page,
-    int limit,
-    bool includeDeleted,
-  ) async {
-    var uri = Uri.parse(
-      "$_tableServiceUrl?page=$page&limit=$limit&includeDeleted=$includeDeleted",
+  static Future<void> httpPostTable(CreateTableDto tableDto) async {
+    var uri = Uri.parse(_tableServiceUrl);
+
+    await http.post(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
+      body: jsonEncode(tableDto.toJson()),
     );
+  }
+
+  static Future<PaginatedTableModel> httpGetPaginated(int page) async {
+    var uri = Uri.parse(
+      "$_tableServiceUrl?page=$page&limit=$kListOfTablesLimit",
+    );
+
     var response = await http.get(
       uri,
       headers: {

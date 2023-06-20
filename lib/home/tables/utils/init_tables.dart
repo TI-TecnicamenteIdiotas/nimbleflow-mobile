@@ -1,23 +1,17 @@
 import 'package:nimbleflow/shared/services/table_service.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../shared/models/table/table_model.dart';
-import '../../shared/storage/storage.dart';
+import '../../../shared/models/table/table_model.dart';
+import '../../../shared/storage/storage.dart';
 
 Future<void> initTables(
-  List<TableModel> tables,
+  List<TableModel> listOfTables,
   int page,
-  int limit,
-  bool includeDeleted,
   void Function(bool value) setIsLoading,
 ) async {
   setIsLoading(true);
 
-  var response = await TableService.httpGetPaginated(
-    page,
-    limit,
-    includeDeleted,
-  );
+  var response = await TableService.httpGetPaginated(page);
 
   await Storage.storage.transaction((txn) async {
     var batch = txn.batch();
@@ -33,6 +27,6 @@ Future<void> initTables(
     await batch.commit(noResult: true);
   });
 
-  tables.addAll(response.items);
+  listOfTables.addAll(response.items);
   setIsLoading(false);
 }

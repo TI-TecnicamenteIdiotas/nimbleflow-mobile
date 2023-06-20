@@ -24,7 +24,7 @@ class AccountableTextFormFieldWidget extends StatelessWidget {
         }
 
         if (value.length > kMaxAccountableLength) {
-          return "O nome não pode ser maior que 256";
+          return "O nome não pode ser maior que $kMaxAccountableLength";
         }
 
         return null;

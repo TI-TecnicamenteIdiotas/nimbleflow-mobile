@@ -3,7 +3,7 @@ import 'package:nimbleflow/home/hub_handlers.dart';
 import 'package:nimbleflow/home/orders/orders_page.dart';
 import 'package:nimbleflow/home/categories/categories_page.dart';
 import 'package:nimbleflow/home/products/products_page.dart';
-import 'package:nimbleflow/home/tables/tables_page.dart';
+import 'package:nimbleflow/home/tables/tables_module_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,10 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _bottomNavigationBarSelectedIndex = 0;
+  var navigationBarCurrentIndex = 0;
 
-  void _onBottomNavigationBarSelected(int index) {
-    setState(() => _bottomNavigationBarSelectedIndex = index);
+  void changeSelectedModule(int index) {
+    setState(() => navigationBarCurrentIndex = index);
   }
 
   @override
@@ -31,9 +31,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _bottomNavigationBarSelectedIndex,
+        index: navigationBarCurrentIndex,
         children: const [
-          TablesPage(),
+          TablesModulePage(),
           OrdersPage(),
           ProductsPage(),
           CategoriesPage(),
@@ -42,8 +42,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         elevation: 4,
         type: BottomNavigationBarType.fixed,
-        currentIndex: _bottomNavigationBarSelectedIndex,
-        onTap: _onBottomNavigationBarSelected,
+        currentIndex: navigationBarCurrentIndex,
+        onTap: changeSelectedModule,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.table_bar_rounded),
