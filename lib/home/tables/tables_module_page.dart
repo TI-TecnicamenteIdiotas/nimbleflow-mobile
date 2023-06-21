@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/tables/utils/init_tables.dart';
 import 'package:nimbleflow/home/tables/widgets/list_of_tables_widget.dart';
-import 'package:nimbleflow/shared/constants/hub_constants.dart';
+import 'package:nimbleflow/shared/storage/storage.dart';
 import 'package:nimbleflow/shared/widgets/loading_dialog_widget.dart';
 
 import '../../shared/constants/global_keys_constants.dart';
-import '../../shared/models/table/table_model.dart';
 import '../../shared/services/hub_service.dart';
+import 'models/table_model.dart';
 import 'utils/hub_subscribers.dart';
 
 class TablesModulePage extends StatefulWidget {
@@ -17,6 +17,8 @@ class TablesModulePage extends StatefulWidget {
 }
 
 class _TablesModulePageState extends State<TablesModulePage> {
+  late final TableHubSubscribers tableHubSubscribers;
+
   bool isLoading = false;
   final listOfTables = List<TableModel>.empty(growable: true);
 
@@ -27,21 +29,19 @@ class _TablesModulePageState extends State<TablesModulePage> {
     super.initState();
     var page = 0;
 
-    subscribeToTableCreated(listOfTables, setState);
-    subscribeToTableUpdated(listOfTables, setState);
-    subscribeToManyTablesDeleted(listOfTables, setState);
-    subscribeToTableDeleted(listOfTables, setState);
+    tableHubSubscribers = TableHubSubscribers(
+      listOfTables,
+      HubService.mainHubConnection,
+      Storage.storage,
+      setState,
+    );
     initTables(listOfTables, page, setIsLoading);
   }
 
   @override
   void dispose() {
     super.dispose();
-    HubService.mainHubConnection
-      ..off(kTableCreatedEventName)
-      ..off(kTableUpdatedEventName)
-      ..off(kManyTablesDeletedEventName)
-      ..off(kTableDeletedEventName);
+    tableHubSubscribers.dispose();
   }
 
   @override

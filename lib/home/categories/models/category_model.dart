@@ -11,6 +11,15 @@ class CategoryModel {
     this.categoryIcon,
   });
 
+  Map<String, dynamic> toStorageMap() {
+    return {
+      "id": id,
+      "title": title,
+      "colorTheme": colorTheme,
+      "categoryIcon": categoryIcon,
+    };
+  }
+
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json["id"],

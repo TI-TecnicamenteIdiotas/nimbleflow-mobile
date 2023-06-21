@@ -5,6 +5,11 @@ const String kMainHubServiceUrl = String.fromEnvironment(
 const int kHubRetryConnectionInMilliseconds = 4000;
 const int kHubRetryConnectionCount = 4;
 
+const String kCategoryCreatedEventName = "CategoryCreated";
+const String kCategoryUpdatedEventName = "CategoryUpdated";
+const String kCategoryDeletedEventName = "CategoryDeleted";
+const String kManyCategoriesDeletedEventName = "ManyCategoriesDeleted";
+
 const String kTableCreatedEventName = "TableCreated";
 const String kTableUpdatedEventName = "TableUpdated";
 const String kTableDeletedEventName = "TableDeleted";

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/shared/constants/hub_constants.dart';
 
-import '../shared/services/hub_service.dart';
-import '../shared/widgets/animated_linear_progression_widget.dart';
+import '../../shared/services/hub_service.dart';
+import '../../shared/widgets/animated_linear_progression_widget.dart';
 
 void handleHubConnectionClosed(BuildContext context) {
   HubService.mainHubConnection.onclose((exception) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         showCloseIcon: true,
@@ -18,6 +19,7 @@ void handleHubConnectionClosed(BuildContext context) {
 
 void handleHubReconnection(BuildContext context) {
   HubService.mainHubConnection.onreconnecting((exception) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         showCloseIcon: true,
@@ -45,7 +47,6 @@ void handleHubReconnection(BuildContext context) {
 void handleHubReconnected(BuildContext context) {
   HubService.mainHubConnection.onreconnected((connectionId) {
     ScaffoldMessenger.of(context).clearSnackBars();
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         showCloseIcon: true,

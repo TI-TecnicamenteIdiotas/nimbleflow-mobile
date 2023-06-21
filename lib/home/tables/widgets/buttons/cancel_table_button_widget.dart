@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/floating_action_button_widget.dart';
 
-class CancelTableButton extends StatelessWidget {
-  const CancelTableButton({super.key});
+class CancelTableButtonWidget extends StatelessWidget {
+  const CancelTableButtonWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

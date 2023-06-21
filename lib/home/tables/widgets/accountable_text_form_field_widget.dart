@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/shared/constants/validation_constants.dart';
+
+import '../constants/tables_constants.dart';
 
 class AccountableTextFormFieldWidget extends StatelessWidget {
   final TextEditingController textEditingController;

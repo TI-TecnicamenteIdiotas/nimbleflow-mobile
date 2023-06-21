@@ -1,4 +1,4 @@
-import './table_model.dart';
+import 'table_model.dart';
 
 class PaginatedTableModel {
   final int totalItems;

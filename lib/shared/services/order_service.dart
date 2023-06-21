@@ -1,9 +1,9 @@
 import '../constants/http_constants.dart';
-import '../models/order/order_model.dart';
+import '../../home/orders/models/order_model.dart';
 
 abstract class OrderService {
   static final _orderServiceUrl = [
-    kOrderServiceUrl,
+    kOrderBaseServiceUrl,
     "api/v1/order",
   ].join("/");
 

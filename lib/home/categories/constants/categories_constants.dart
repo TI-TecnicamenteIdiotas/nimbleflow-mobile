@@ -1,0 +1,1 @@
+const kListOfCategoriesLimit = 64;

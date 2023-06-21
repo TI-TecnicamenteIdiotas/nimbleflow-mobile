@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/tables/table/table_page.dart';
-import 'package:nimbleflow/shared/models/table/table_model.dart';
+import 'package:nimbleflow/home/tables/pages/table_page.dart';
+
+import '../models/table_model.dart';
 
 class ListOfTablesListItemWidget extends StatelessWidget {
   final TableModel table;

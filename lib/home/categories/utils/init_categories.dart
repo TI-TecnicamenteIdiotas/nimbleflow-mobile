@@ -1,25 +1,25 @@
 import 'package:nimbleflow/shared/constants/storage_constants.dart';
-import 'package:nimbleflow/home/tables/services/table_service.dart';
+import 'package:nimbleflow/home/categories/models/category_model.dart';
+import 'package:nimbleflow/home/categories/services/category_service.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/table_model.dart';
 import '../../../shared/storage/storage.dart';
 
-Future<void> initTables(
-  List<TableModel> listOfTables,
-  int page,
-  void Function(bool value) setIsLoading,
-) async {
+Future<void> initCategories(
+    List<CategoryModel> listOfCategories,
+    int page,
+    void Function(bool value) setIsLoading,
+    ) async {
   setIsLoading(true);
 
-  var response = await TableService.httpGetPaginated(page);
+  var response = await CategoryService.httpGetPaginated(page);
 
   await Storage.storage.transaction((txn) async {
     var batch = txn.batch();
 
     for (var item in response.items) {
       batch.insert(
-        kTableTableName,
+        kCategoryTableName,
         item.toStorageMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -28,6 +28,6 @@ Future<void> initTables(
     await batch.commit(noResult: true);
   });
 
-  listOfTables.addAll(response.items);
+  listOfCategories.addAll(response.items);
   setIsLoading(false);
 }

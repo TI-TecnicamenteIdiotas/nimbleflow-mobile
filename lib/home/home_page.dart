@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/hub_handlers.dart';
+import 'package:nimbleflow/home/utils/hub_handlers.dart';
 import 'package:nimbleflow/home/orders/orders_page.dart';
-import 'package:nimbleflow/home/categories/categories_page.dart';
+import 'package:nimbleflow/home/categories/categories_module_page.dart';
 import 'package:nimbleflow/home/products/products_page.dart';
 import 'package:nimbleflow/home/tables/tables_module_page.dart';
 
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
           TablesModulePage(),
           OrdersPage(),
           ProductsPage(),
-          CategoriesPage(),
+          CategoriesModulePage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

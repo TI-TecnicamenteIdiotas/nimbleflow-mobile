@@ -2,21 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:nimbleflow/shared/constants/tables_constants.dart';
-import 'package:nimbleflow/shared/models/table/create_table_dto.dart';
-import 'package:nimbleflow/shared/models/table/paginated_table_model.dart';
+import 'package:nimbleflow/home/tables/constants/tables_constants.dart';
+import 'package:nimbleflow/home/tables/dtos/create_table_dto.dart';
+import 'package:nimbleflow/home/tables/models/paginated_table_model.dart';
 
-import '../constants/http_constants.dart';
-import '../models/table/update_table_dto.dart';
+import '../../../shared/constants/http_constants.dart';
+import '../dtos/update_table_dto.dart';
 
 abstract class TableService {
-  static final _tableServiceUrl = [
-    kTableServiceUrl,
-    "api/v1/table",
-  ].join("/");
-
   static Future<void> httpPostTable(CreateTableDto tableDto) async {
-    var uri = Uri.parse(_tableServiceUrl);
+    var uri = Uri.parse(kTableServiceUrl);
 
     await http.post(
       uri,
@@ -29,7 +24,7 @@ abstract class TableService {
 
   static Future<PaginatedTableModel> httpGetPaginated(int page) async {
     var uri = Uri.parse(
-      "$_tableServiceUrl?page=$page&limit=$kListOfTablesLimit",
+      "$kTableServiceUrl?page=$page&limit=$kListOfTablesLimit",
     );
 
     var response = await http.get(
@@ -50,7 +45,7 @@ abstract class TableService {
   }
 
   static Future httpPutTable(UpdateTableDto tableDto) async {
-    var uri = Uri.parse("$_tableServiceUrl/${tableDto.id}");
+    var uri = Uri.parse("$kTableServiceUrl/${tableDto.id}");
 
     await http.put(
       uri,
@@ -62,7 +57,7 @@ abstract class TableService {
   }
 
   static Future httpDeleteManyTables(List<String> tablesIds) async {
-    var uri = Uri.parse("$_tableServiceUrl/by-ids");
+    var uri = Uri.parse("$kTableServiceUrl/by-ids");
 
     await http.delete(
       uri,
@@ -71,7 +66,7 @@ abstract class TableService {
   }
 
   static Future httpDeleteTable(String tableId) async {
-    var uri = Uri.parse("$_tableServiceUrl/$tableId");
+    var uri = Uri.parse("$kTableServiceUrl/$tableId");
 
     await http.delete(uri);
   }

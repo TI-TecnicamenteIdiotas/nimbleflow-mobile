@@ -1,3 +1,4 @@
+import 'package:nimbleflow/shared/constants/storage_constants.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,12 +11,13 @@ class Storage {
         await getDatabasesPath(),
         'nimbleflow_database.db',
       ),
-      onCreate: (db, _) async {
+      onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
-
+      },
+      onCreate: (db, _) async {
         await db.execute(
           """CREATE TABLE IF NOT EXISTS
-          category(
+          $kCategoryTableName(
             id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
             colorTheme INTEGER NULL,
@@ -25,7 +27,7 @@ class Storage {
 
         await db.execute(
           """CREATE TABLE IF NOT EXISTS
-          product(
+          $kProductTableName(
             id TEXT PRIMARY KEY,
             categoryId TEXT,
             title TEXT NOT NULL,
@@ -33,13 +35,13 @@ class Storage {
             price REAL NOT NULL,
             imageUrl TEXT NULL,
             isFavorite INTEGER NOT NULL,
-            FOREIGN KEY (categoryId) REFERENCES category (id)
+            FOREIGN KEY (categoryId) REFERENCES $kCategoryTableName (id)
           )""",
         );
 
         await db.execute(
           """CREATE TABLE IF NOT EXISTS
-          "table"(
+          "$kTableTableName"(
             id TEXT PRIMARY KEY,
             accountable TEXT NOT NULL,
             isFullyPaid INTEGER
@@ -48,23 +50,23 @@ class Storage {
 
         await db.execute(
           """CREATE TABLE IF NOT EXISTS
-          "order"(
+          "$kOrderTableName"(
             id TEXT PRIMARY KEY,
             tableId TEXT,
             orderDate TEXT,
             paymentMethod TEXT,
             active INTEGER,
-            FOREIGN KEY (tableId) REFERENCES "table" (id)
+            FOREIGN KEY (tableId) REFERENCES "$kTableTableName" (id)
           )""",
         );
 
         await db.execute(
           """CREATE TABLE IF NOT EXISTS
-          order_product(
+          $kOrderProductTableName(
             orderId TEXT,
             productId TEXT,
-            FOREIGN KEY (orderId) REFERENCES "order" (id),
-            FOREIGN KEY (productId) REFERENCES product (id)
+            FOREIGN KEY (orderId) REFERENCES "$kOrderTableName" (id),
+            FOREIGN KEY (productId) REFERENCES $kProductTableName (id)
           )""",
         );
       },
@@ -72,9 +74,9 @@ class Storage {
       onOpen: (db) async {
         await db.delete("category");
         await db.delete("product");
-        await db.delete("table");
-        await db.delete("order");
         await db.delete("order_product");
+        await db.delete("order");
+        await db.delete("table");
       },
     );
   }

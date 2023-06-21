@@ -9,14 +9,6 @@ class TableModel {
     required this.isFullyPaid,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "accountable": accountable,
-      "isFullyPaid": isFullyPaid,
-    };
-  }
-
   Map<String, dynamic> toStorageMap() {
     return {
       "id": id,

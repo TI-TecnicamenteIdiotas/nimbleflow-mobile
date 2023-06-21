@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/cancel_table_button.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/create_table_button.dart';
-import 'package:nimbleflow/shared/models/table/create_table_dto.dart';
+import 'package:nimbleflow/home/tables/widgets/buttons/cancel_table_button_widget.dart';
+import 'package:nimbleflow/home/tables/widgets/buttons/create_table_button_widget.dart';
+import 'package:nimbleflow/home/tables/dtos/create_table_dto.dart';
 
-import '../../../shared/services/table_service.dart';
+import '../services/table_service.dart';
 import '../widgets/accountable_text_form_field_widget.dart';
-import '../widgets/is_paid_widget.dart';
+import '../widgets/is_fully_paid_widget.dart';
 
 class CreateTablePage extends StatefulWidget {
   const CreateTablePage({super.key});
@@ -47,7 +47,7 @@ class _CreateTablePageState extends State<CreateTablePage> {
                   textEditingController: accountableTextEditingController,
                 ),
               ),
-              IsPaidWidget(
+              IsFullyPaidWidget(
                 initialValue: isFullyPaid,
                 onChanged: setIsFullyPaid,
               ),
@@ -59,8 +59,8 @@ class _CreateTablePageState extends State<CreateTablePage> {
         direction: Axis.vertical,
         spacing: 24,
         children: [
-          CreateTableButton(onPressed: create),
-          const CancelTableButton(),
+          CreateTableButtonWidget(onPressed: create),
+          const CancelTableButtonWidget(),
         ],
       ),
     );

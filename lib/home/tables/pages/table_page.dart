@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/tables/widgets/accountable_text_form_field_widget.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/delete_table_button.dart';
-import 'package:nimbleflow/shared/models/table/table_model.dart';
-import 'package:nimbleflow/shared/models/table/update_table_dto.dart';
-import 'package:nimbleflow/shared/services/table_service.dart';
+import 'package:nimbleflow/home/tables/widgets/buttons/delete_table_button_widget.dart';
+import 'package:nimbleflow/home/tables/services/table_service.dart';
 
-import '../widgets/buttons/save_table_button.dart';
-import '../widgets/is_paid_widget.dart';
+import '../dtos/update_table_dto.dart';
+import '../models/table_model.dart';
+import '../widgets/buttons/save_table_button_widget.dart';
+import '../widgets/is_fully_paid_widget.dart';
 
 class TablePage extends StatefulWidget {
   final TableModel table;
@@ -85,7 +85,7 @@ class _TablePageState extends State<TablePage> {
                   textEditingController: accountableTextEditingController,
                 ),
               ),
-              IsPaidWidget(
+              IsFullyPaidWidget(
                 initialValue: table.isFullyPaid,
                 onChanged: setIsFullyPaid,
               ),
@@ -97,8 +97,8 @@ class _TablePageState extends State<TablePage> {
         direction: Axis.vertical,
         spacing: 24,
         children: [
-          SaveTableButton(onPressed: save),
-          DeleteTableButton(onPressed: delete),
+          SaveTableButtonWidget(onPressed: save),
+          DeleteTableButtonWidget(onPressed: delete),
         ],
       ),
     );
