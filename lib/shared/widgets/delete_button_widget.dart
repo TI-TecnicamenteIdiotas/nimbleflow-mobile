@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/widgets/floating_action_button_widget.dart';
+import 'floating_action_button_widget.dart';
 
-class SaveTableButtonWidget extends StatefulWidget {
+class DeleteButtonWidget extends StatefulWidget {
   final Future<void> Function() onPressed;
 
-  const SaveTableButtonWidget({super.key, required this.onPressed});
+  const DeleteButtonWidget({super.key, required this.onPressed});
 
   @override
-  State<SaveTableButtonWidget> createState() => _SaveTableButtonWidgetState();
+  State<DeleteButtonWidget> createState() => _DeleteButtonWidgetState();
 }
 
-class _SaveTableButtonWidgetState extends State<SaveTableButtonWidget> {
+class _DeleteButtonWidgetState extends State<DeleteButtonWidget> {
   bool isLoading = false;
 
   void setIsLoading(bool value) => setState(() => isLoading = value);
 
+  void pop() => Navigator.pop(context);
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButtonWidget(
-      heroTag: "save",
-      icon: const Icon(Icons.save_rounded),
-      iconText: "Salvar",
+      heroTag: "delete",
+      icon: const Icon(Icons.delete_rounded),
+      iconText: "Deletar",
       isLoading: isLoading,
       onPressed: () async {
         setIsLoading(true);
         await widget.onPressed();
         setIsLoading(false);
+        pop();
       },
     );
   }

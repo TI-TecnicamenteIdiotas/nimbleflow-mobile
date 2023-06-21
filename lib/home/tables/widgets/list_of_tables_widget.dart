@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nimbleflow/home/tables/pages/create_table_page.dart';
 import 'package:nimbleflow/home/tables/widgets/list_of_tables_list_item_widget.dart';
+import 'package:nimbleflow/shared/constants/global_keys_constants.dart';
 
+import '../../../shared/widgets/new_button_widget.dart';
 import '../models/table_model.dart';
-import 'buttons/new_table_button_widget.dart';
 
 class ListOfTablesWidget extends StatelessWidget {
   final List<TableModel> listOfTables;
@@ -20,7 +22,11 @@ class ListOfTablesWidget extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: const NewTableButtonWidget(),
+      floatingActionButton: NewButtonWidget(
+        "Mesa",
+        kTablesModuleNavigatorKey.currentState!.context,
+        const CreateTablePage()
+      ),
     );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/tables/widgets/accountable_text_form_field_widget.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/delete_table_button_widget.dart';
 import 'package:nimbleflow/home/tables/services/table_service.dart';
+import 'package:nimbleflow/shared/widgets/vertical_floating_action_buttons.dart';
 
+import '../../../shared/widgets/delete_button_widget.dart';
+import '../../../shared/widgets/save_button_widget.dart';
 import '../dtos/update_table_dto.dart';
 import '../models/table_model.dart';
-import '../widgets/buttons/save_table_button_widget.dart';
 import '../widgets/is_fully_paid_widget.dart';
 
 class TablePage extends StatefulWidget {
@@ -93,12 +94,10 @@ class _TablePageState extends State<TablePage> {
           ),
         ),
       ),
-      floatingActionButton: Wrap(
-        direction: Axis.vertical,
-        spacing: 24,
-        children: [
-          SaveTableButtonWidget(onPressed: save),
-          DeleteTableButtonWidget(onPressed: delete),
+      floatingActionButton: VerticalFloatingActionButtons(
+        [
+          SaveButtonWidget(onPressed: save),
+          DeleteButtonWidget(onPressed: delete),
         ],
       ),
     );

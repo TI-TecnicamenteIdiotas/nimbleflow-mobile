@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/cancel_table_button_widget.dart';
-import 'package:nimbleflow/home/tables/widgets/buttons/create_table_button_widget.dart';
 import 'package:nimbleflow/home/tables/dtos/create_table_dto.dart';
+import 'package:nimbleflow/shared/widgets/vertical_floating_action_buttons.dart';
 
+import '../../../shared/widgets/cancel_button_widget.dart';
+import '../../../shared/widgets/create_button_widget.dart';
 import '../services/table_service.dart';
 import '../widgets/accountable_text_form_field_widget.dart';
 import '../widgets/is_fully_paid_widget.dart';
@@ -22,13 +23,15 @@ class _CreateTablePageState extends State<CreateTablePage> {
 
   void setIsFullyPaid(bool value) => setState(() => isFullyPaid = value);
 
-  Future<void> create() async {
-    if (!formKey.currentState!.validate()) return;
+  Future<bool> create() async {
+    if (!formKey.currentState!.validate()) return false;
 
     await TableService.httpPostTable(CreateTableDto(
       accountable: accountableTextEditingController.text,
       isFullyPaid: isFullyPaid,
     ));
+
+    return true;
   }
 
   @override
@@ -55,12 +58,10 @@ class _CreateTablePageState extends State<CreateTablePage> {
           ),
         ),
       ),
-      floatingActionButton: Wrap(
-        direction: Axis.vertical,
-        spacing: 24,
-        children: [
-          CreateTableButtonWidget(onPressed: create),
-          const CancelTableButtonWidget(),
+      floatingActionButton: VerticalFloatingActionButtons(
+        [
+          CreateButtonWidget(onPressed: create),
+          const CancelButtonWidget(),
         ],
       ),
     );

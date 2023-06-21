@@ -23,9 +23,10 @@ class ListOfCategoriesListItemWidget extends StatelessWidget {
           kListOfIcons[(category.categoryIcon ?? 0) <= listOfIconsMaxIndex
               ? (category.categoryIcon ?? 0)
               : 0],
-          color: kListOfColors[(category.colorTheme ?? 0) <= listOfColorsMaxIndex
-              ? (category.colorTheme ?? 0)
-              : 0],
+          color: kListOfColors[
+                  (category.colorTheme ?? 0) <= listOfColorsMaxIndex
+                      ? (category.colorTheme ?? 0)
+                      : 0],
         ),
         onTap: () {
           Navigator.push(
