@@ -44,7 +44,7 @@ abstract class TableService {
     return PaginatedTableModel.fromJson(jsonDecode(response.body));
   }
 
-  static Future httpPutTable(UpdateTableDto tableDto) async {
+  static Future<void> httpPutTable(UpdateTableDto tableDto) async {
     var uri = Uri.parse("$kTableServiceUrl/${tableDto.id}");
 
     await http.put(
@@ -56,7 +56,7 @@ abstract class TableService {
     );
   }
 
-  static Future httpDeleteManyTables(List<String> tablesIds) async {
+  static Future<void> httpDeleteManyTables(List<String> tablesIds) async {
     var uri = Uri.parse("$kTableServiceUrl/by-ids");
 
     await http.delete(
@@ -65,7 +65,7 @@ abstract class TableService {
     );
   }
 
-  static Future httpDeleteTable(String tableId) async {
+  static Future<void> httpDeleteTable(String tableId) async {
     var uri = Uri.parse("$kTableServiceUrl/$tableId");
 
     await http.delete(uri);

@@ -2,23 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/categories/pages/category_page.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
 
+import '../../../shared/constants/list_of_icons_constants.dart';
+
 class ListOfCategoriesListItemWidget extends StatelessWidget {
   final CategoryModel category;
-  final List<IconData> listOfIcons = [
-    Icons.fastfood_rounded,
-    Icons.ac_unit_outlined,
-  ];
-  final List<Color> listOfColors = [
-    Colors.red,
-    Colors.blue,
-  ];
 
-  ListOfCategoriesListItemWidget(this.category, {super.key});
+  const ListOfCategoriesListItemWidget(this.category, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    var listOfIconsMaxIndex = listOfIcons.length - 1;
-    var listOfColorsMaxIndex = listOfColors.length - 1;
+    var listOfIconsMaxIndex = kListOfIcons.length - 1;
+    var listOfColorsMaxIndex = kListOfColors.length - 1;
 
     return Card(
       key: ValueKey<String>(category.id),
@@ -26,10 +20,10 @@ class ListOfCategoriesListItemWidget extends StatelessWidget {
       child: ListTile(
         title: Text(category.title),
         leading: Icon(
-          listOfIcons[(category.categoryIcon ?? 0) <= listOfIconsMaxIndex
+          kListOfIcons[(category.categoryIcon ?? 0) <= listOfIconsMaxIndex
               ? (category.categoryIcon ?? 0)
               : 0],
-          color: listOfColors[(category.colorTheme ?? 0) <= listOfColorsMaxIndex
+          color: kListOfColors[(category.colorTheme ?? 0) <= listOfColorsMaxIndex
               ? (category.colorTheme ?? 0)
               : 0],
         ),
