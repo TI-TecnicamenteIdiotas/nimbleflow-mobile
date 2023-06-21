@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:nimbleflow/home/products/models/product_model.dart';
 
-import '../constants/http_constants.dart';
+import '../../../shared/constants/http_constants.dart';
 
 abstract class ProductService {
   static Future<List<ProductModel>?> httpGet() async {

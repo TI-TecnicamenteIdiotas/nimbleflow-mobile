@@ -25,3 +25,7 @@ final String kTableServiceUrl = [
 const String kOrderBaseServiceUrl = String.fromEnvironment(
   "ORDER_BASE_SERVICE_URL",
 );
+final kOrderServiceUrl = [
+  kOrderBaseServiceUrl,
+  "api/v1/order",
+].join("/");
