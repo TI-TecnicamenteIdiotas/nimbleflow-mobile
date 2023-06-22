@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+final kColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+
 final List<IconData> kListOfIcons = [
   Icons.stars_rounded,
   Icons.fastfood_rounded,
@@ -7,6 +9,7 @@ final List<IconData> kListOfIcons = [
 ];
 
 final List<Color> kListOfColors = [
-  Colors.red,
-  Colors.blue,
+  kColorScheme.primary,
+  kColorScheme.onPrimaryContainer,
+  kColorScheme.onSecondaryContainer,
 ];

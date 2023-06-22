@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/tables/widgets/accountable_text_form_field_widget.dart';
 import 'package:nimbleflow/home/tables/services/table_service.dart';
-import 'package:nimbleflow/shared/widgets/vertical_floating_action_buttons.dart';
+import 'package:nimbleflow/home/tables/widgets/table_detailed_widget.dart';
 
 import '../../../shared/widgets/delete_button_widget.dart';
 import '../../../shared/widgets/save_button_widget.dart';
 import '../dtos/update_table_dto.dart';
 import '../models/table_model.dart';
-import '../widgets/is_fully_paid_widget.dart';
 
 class TablePage extends StatefulWidget {
   final TableModel table;
@@ -72,34 +70,15 @@ class _TablePageState extends State<TablePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Form(
-        key: formKey,
-        autovalidateMode: AutovalidateMode.disabled,
-        child: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: AccountableTextFormFieldWidget(
-                  textEditingController: accountableTextEditingController,
-                ),
-              ),
-              IsFullyPaidWidget(
-                initialValue: table.isFullyPaid,
-                onChanged: setIsFullyPaid,
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: VerticalFloatingActionButtons(
-        [
-          SaveButtonWidget(onPressed: save),
-          DeleteButtonWidget(onPressed: delete),
-        ],
-      ),
+    return TableDetailedWidget(
+      formKey: formKey,
+      accountableTextEditingController: accountableTextEditingController,
+      isFullyPaid: table.isFullyPaid,
+      setIsFullyPaid: setIsFullyPaid,
+      floatingActionButtons: [
+        SaveButtonWidget(onPressed: save),
+        DeleteButtonWidget(onPressed: delete),
+      ],
     );
   }
 }

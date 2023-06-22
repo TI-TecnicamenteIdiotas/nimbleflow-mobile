@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/categories/dtos/update_category_dto.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
+import 'package:nimbleflow/home/categories/widgets/category_detailed_widget.dart';
 
 import '../../../shared/constants/layout_constants.dart';
 import '../../../shared/widgets/delete_button_widget.dart';
 import '../../../shared/widgets/save_button_widget.dart';
-import '../../../shared/widgets/vertical_floating_action_buttons.dart';
 import '../services/category_service.dart';
-import '../widgets/title_text_form_field_widget.dart';
 
 class CategoryPage extends StatefulWidget {
   final CategoryModel category;
@@ -53,50 +52,6 @@ class _CategoryPageState extends State<CategoryPage> {
     await CategoryService.httpDeleteCategory(category.id);
   }
 
-  DropdownButton buildColorThemeDropDownButton() {
-    var value = switch (category.colorTheme) {
-      null => kListOfColors[0],
-      _ => kListOfColors[category.colorTheme!],
-    };
-
-    return DropdownButton<Color>(
-      hint: const Text("Cor da categoria"),
-      isExpanded: true,
-      value: value,
-      items: kListOfColors.map(
-        (element) {
-          return DropdownMenuItem<Color>(
-            value: element,
-            child: Container(color: element, height: 20),
-          );
-        },
-      ).toList(),
-      onChanged: setColorTheme,
-    );
-  }
-
-  DropdownButton buildCategoryIconDropDownButton() {
-    var value = switch (category.categoryIcon) {
-      null => kListOfIcons[0],
-      _ => kListOfIcons[category.categoryIcon!]
-    };
-
-    return DropdownButton<IconData>(
-      hint: const Text("Ícone da categoria"),
-      isExpanded: true,
-      value: value,
-      items: kListOfIcons.map(
-        (element) {
-          return DropdownMenuItem<IconData>(
-            value: element,
-            child: Icon(element),
-          );
-        },
-      ).toList(),
-      onChanged: setCategoryIcon,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -130,34 +85,17 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Form(
-        key: formKey,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TitleTextFormFieldWidget(
-                  textEditingController: titleTextEditingController,
-                ),
-                const SizedBox(height: 24),
-                buildColorThemeDropDownButton(),
-                const SizedBox(height: 24),
-                buildCategoryIconDropDownButton(),
-              ],
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: VerticalFloatingActionButtons(
-        [
-          SaveButtonWidget(onPressed: save),
-          DeleteButtonWidget(onPressed: delete),
-        ],
-      ),
+    return CategoryDetailed(
+      formKey: formKey,
+      titleTextEditingController: titleTextEditingController,
+      colorTheme: category.colorTheme,
+      setColorTheme: setColorTheme,
+      categoryIcon: category.categoryIcon,
+      setCategoryIcon: setCategoryIcon,
+      floatingActionButtons: [
+        SaveButtonWidget(onPressed: save),
+        DeleteButtonWidget(onPressed: delete),
+      ],
     );
   }
 }
