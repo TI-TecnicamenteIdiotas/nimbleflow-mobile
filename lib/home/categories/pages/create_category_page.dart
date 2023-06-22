@@ -53,7 +53,9 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
       appBarText: "Nova categoria",
       formKey: formKey,
       titleTextEditingController: titleTextEditingController,
+      colorTheme: colorTheme,
       setColorTheme: setColorTheme,
+      categoryIcon: categoryIcon,
       setCategoryIcon: setCategoryIcon,
       floatingActionButtons: [
         CreateButtonWidget(onPressed: create),

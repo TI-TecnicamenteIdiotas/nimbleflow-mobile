@@ -3,6 +3,7 @@ import 'package:nimbleflow/home/categories/pages/category_page.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
 
 import '../../../shared/constants/layout_constants.dart';
+import '../../../shared/layout_utils.dart';
 
 class ListOfCategoriesListItemWidget extends StatelessWidget {
   final CategoryModel category;
@@ -18,18 +19,9 @@ class ListOfCategoriesListItemWidget extends StatelessWidget {
     return kListOfIcons[category.categoryIcon!];
   }
 
-  Color buildColor() {
-    if (category.colorTheme == null) return kListOfColors[0];
-    if (category.colorTheme! > kListOfColors.length - 1) {
-      return kListOfColors[0];
-    }
-
-    return kListOfColors[category.colorTheme!];
-  }
-
   @override
   Widget build(BuildContext context) {
-    var color = buildColor();
+    var color = getColorByCategoryColorTheme(category.colorTheme);
     var colorWithOpacity = color.withOpacity(0.2);
 
     return Card(

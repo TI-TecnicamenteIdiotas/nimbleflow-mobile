@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/products/models/product_model_with_relations.dart';
 import 'package:nimbleflow/home/products/pages/product_page.dart';
 
+import '../../../shared/layout_utils.dart';
+
 class ListOfProductsListItemWidget extends StatelessWidget {
   final ProductModelWithRelations product;
 
@@ -33,8 +35,13 @@ class ListOfProductsListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var color = getColorByCategoryColorTheme(product.category.colorTheme)
+        .withOpacity(0.2);
+
     return Card(
       key: ValueKey<String>(product.id),
+      color: color,
+      shadowColor: color,
       elevation: 1,
       child: ListTile(
         leading: buildNetworkImage(),

@@ -15,6 +15,10 @@ const String kProductUpdatedEventName = "ProductUpdated";
 const String kProductDeletedEventName = "ProductDeleted";
 const String kManyProductsDeletedEventName = "ManyProductsDeleted";
 
+const String kProductCategoryUpdated = "ProductCategoryUpdated";
+const String kManyProductsCategoriesDeleted = "ManyProductsCategoriesDeleted";
+const String kProductCategoryDeleted = "ProductCategoryDeleted";
+
 const String kTableCreatedEventName = "TableCreated";
 const String kTableUpdatedEventName = "TableUpdated";
 const String kTableDeletedEventName = "TableDeleted";

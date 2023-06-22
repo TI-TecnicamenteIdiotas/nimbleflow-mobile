@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../../shared/constants/hub_constants.dart';
 import '../../../shared/constants/storage_constants.dart';
 import '../../../shared/storage/query_builders.dart';
+import '../../categories/models/category_model.dart';
 import '../constants/products_constants.dart';
 import '../models/product_model.dart';
 import '../models/product_model_with_relations.dart';
@@ -26,6 +27,9 @@ class ProductHubSubscriber {
     subscribeToProductUpdated();
     subscribeToProductDeleted();
     subscribeToManyProductsDeleted();
+    subscribeToProductCategoryUpdated();
+    subscribeToManyProductsCategoriesDeleted();
+    subscribeToProductCategoryDeleted();
   }
 
   void subscribeToProductCreated() {
@@ -95,16 +99,16 @@ class ProductHubSubscriber {
   void subscribeToProductDeleted() {
     hubConnection.on(kProductDeletedEventName, (arguments) async {
       var json = jsonDecode(arguments![0]);
-      var tableToDeleteId = json["id"] as String;
+      var productToDeleteId = json["id"] as String;
 
       listOfProductsWithRelations.removeWhere(
-        (element) => element.id == tableToDeleteId,
+        (element) => element.id == productToDeleteId,
       );
 
       await storage.delete(
         kProductTableName,
         where: "id = ?",
-        whereArgs: [tableToDeleteId],
+        whereArgs: [productToDeleteId],
       );
 
       setState(() {});
@@ -114,7 +118,7 @@ class ProductHubSubscriber {
   void subscribeToManyProductsDeleted() {
     hubConnection.on(kManyProductsDeletedEventName, (arguments) async {
       var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
-      var productsToDeleteIds = List.from(json["ids"]);
+      var productsToDeleteIds = List<String>.from(json["ids"]);
 
       listOfProductsWithRelations.removeWhere(
         (element) => productsToDeleteIds.contains(element.id),
@@ -138,11 +142,62 @@ class ProductHubSubscriber {
     });
   }
 
+  void subscribeToProductCategoryUpdated() {
+    hubConnection.on(kProductCategoryUpdated, (arguments) {
+      var json = jsonDecode(arguments![0]);
+      var categoryModel = CategoryModel.fromJson(json);
+
+      var listOfProductsToUpdate = listOfProductsWithRelations.where(
+        (element) => element.category.id == categoryModel.id,
+      );
+
+      if (listOfProductsToUpdate.isEmpty) return;
+
+      for (var product in listOfProductsToUpdate) {
+        product.category
+          ..title = categoryModel.title
+          ..colorTheme = categoryModel.colorTheme
+          ..categoryIcon = categoryModel.categoryIcon;
+      }
+
+      setState(() {});
+    });
+  }
+
+  void subscribeToManyProductsCategoriesDeleted() {
+    hubConnection.on(kManyProductsCategoriesDeleted, (arguments) {
+      var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
+      var deletedCategoriesIds = List<String>.from(json["ids"]);
+
+      listOfProductsWithRelations.removeWhere((element) {
+        return deletedCategoriesIds.contains(element.category.id);
+      });
+
+      setState(() {});
+    });
+  }
+
+  void subscribeToProductCategoryDeleted() {
+    hubConnection.on(kProductCategoryDeleted, (arguments) {
+      var json = jsonDecode(arguments![0]);
+      var deletedCategoryId = json["id"] as String;
+
+      listOfProductsWithRelations.removeWhere((element) {
+        return element.category.id == deletedCategoryId;
+      });
+
+      setState(() {});
+    });
+  }
+
   void dispose() {
     hubConnection
       ..off(kProductCreatedEventName)
       ..off(kProductUpdatedEventName)
       ..off(kManyProductsDeletedEventName)
-      ..off(kProductDeletedEventName);
+      ..off(kProductDeletedEventName)
+      ..off(kCategoryUpdatedEventName)
+      ..off(kManyCategoriesDeletedEventName)
+      ..off(kCategoryDeletedEventName);
   }
 }

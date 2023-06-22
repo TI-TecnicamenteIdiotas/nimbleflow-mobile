@@ -22,8 +22,8 @@ class CategoryHubSubscriber {
   ) {
     subscribeToCategoryCreated();
     subscribeToCategoryUpdated();
-    subscribeToCategoryDeleted();
     subscribeToManyCategoriesDeleted();
+    subscribeToCategoryDeleted();
   }
 
   void subscribeToCategoryCreated() {
@@ -73,25 +73,6 @@ class CategoryHubSubscriber {
     });
   }
 
-  void subscribeToCategoryDeleted() {
-    hubConnection.on(kCategoryDeletedEventName, (arguments) async {
-      var json = jsonDecode(arguments![0]);
-      var tableToDeleteId = json["id"] as String;
-
-      listOfCategories.removeWhere(
-        (element) => element.id == tableToDeleteId,
-      );
-
-      await storage.delete(
-        kCategoryTableName,
-        where: "id = ?",
-        whereArgs: [tableToDeleteId],
-      );
-
-      setState(() {});
-    });
-  }
-
   void subscribeToManyCategoriesDeleted() {
     hubConnection.on(kManyCategoriesDeletedEventName, (arguments) async {
       var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
@@ -114,6 +95,25 @@ class CategoryHubSubscriber {
 
         await batch.commit(noResult: true);
       });
+
+      setState(() {});
+    });
+  }
+
+  void subscribeToCategoryDeleted() {
+    hubConnection.on(kCategoryDeletedEventName, (arguments) async {
+      var json = jsonDecode(arguments![0]);
+      var categoryToDeleteId = json["id"] as String;
+
+      listOfCategories.removeWhere(
+            (element) => element.id == categoryToDeleteId,
+      );
+
+      await storage.delete(
+        kCategoryTableName,
+        where: "id = ?",
+        whereArgs: [categoryToDeleteId],
+      );
 
       setState(() {});
     });
