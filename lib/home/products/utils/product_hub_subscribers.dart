@@ -5,17 +5,19 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../../shared/constants/hub_constants.dart';
 import '../../../shared/constants/storage_constants.dart';
+import '../../../shared/storage/query_builders.dart';
 import '../constants/products_constants.dart';
 import '../models/product_model.dart';
+import '../models/product_model_with_relations.dart';
 
 class ProductHubSubscriber {
-  final List<ProductModel> listOfProducts;
+  final List<ProductModelWithRelations> listOfProductsWithRelations;
   final HubConnection hubConnection;
   final Database storage;
   final void Function(void Function()) setState;
 
   ProductHubSubscriber(
-    this.listOfProducts,
+    this.listOfProductsWithRelations,
     this.hubConnection,
     this.storage,
     this.setState,
@@ -28,7 +30,7 @@ class ProductHubSubscriber {
 
   void subscribeToProductCreated() {
     hubConnection.on(kProductCreatedEventName, (arguments) async {
-      if (listOfProducts.length == kListOfProductsLimit) return;
+      if (listOfProductsWithRelations.length == kListOfProductsLimit) return;
 
       var json = jsonDecode(arguments![0]);
       var productModel = ProductModel.fromJson(json);
@@ -39,7 +41,14 @@ class ProductHubSubscriber {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
-      setState(() => listOfProducts.add(productModel));
+      var queryResponse = (await storage.rawQuery(
+        buildProductWithRelationsQuery(productModel.id),
+      ))
+          .first;
+      var productWithRelations =
+          ProductModelWithRelations.fromStorageMap(queryResponse);
+
+      setState(() => listOfProductsWithRelations.add(productWithRelations));
     });
   }
 
@@ -48,7 +57,7 @@ class ProductHubSubscriber {
       var json = jsonDecode(arguments![0]);
       var productModel = ProductModel.fromJson(json);
 
-      var productToUpdate = listOfProducts
+      var productToUpdate = listOfProductsWithRelations
           .where(
             (element) => element.id == productModel.id,
           )
@@ -64,6 +73,13 @@ class ProductHubSubscriber {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
 
+      var queryResponse = (await storage.rawQuery(
+        buildProductWithRelationsQuery(productModel.id),
+      ))
+          .first;
+      var productWithRelations =
+          ProductModelWithRelations.fromStorageMap(queryResponse);
+
       setState(() {
         productToUpdate
           ..title = productModel.title
@@ -71,7 +87,7 @@ class ProductHubSubscriber {
           ..price = productModel.price
           ..imageUrl = productModel.imageUrl
           ..isFavorite = productModel.isFavorite
-          ..categoryId = productModel.categoryId;
+          ..category = productWithRelations.category;
       });
     });
   }
@@ -81,7 +97,7 @@ class ProductHubSubscriber {
       var json = jsonDecode(arguments![0]);
       var tableToDeleteId = json["id"] as String;
 
-      listOfProducts.removeWhere(
+      listOfProductsWithRelations.removeWhere(
         (element) => element.id == tableToDeleteId,
       );
 
@@ -100,7 +116,7 @@ class ProductHubSubscriber {
       var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
       var productsToDeleteIds = List.from(json["ids"]);
 
-      listOfProducts.removeWhere(
+      listOfProductsWithRelations.removeWhere(
         (element) => productsToDeleteIds.contains(element.id),
       );
 

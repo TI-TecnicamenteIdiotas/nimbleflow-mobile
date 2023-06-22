@@ -1,3 +1,5 @@
+import 'package:nimbleflow/shared/constants/storage_constants.dart';
+
 class CategoryModel {
   final String id;
   String title;
@@ -10,6 +12,15 @@ class CategoryModel {
     this.colorTheme,
     this.categoryIcon,
   });
+
+  factory CategoryModel.fromStorageMap(Map<String, dynamic> map) {
+    return CategoryModel(
+      id: map["${kCategoryTableName}_id"],
+      title: map["${kCategoryTableName}_title"],
+      colorTheme: map["${kCategoryTableName}_colorTheme"],
+      categoryIcon: map["${kCategoryTableName}_categoryIcon"],
+    );
+  }
 
   Map<String, dynamic> toStorageMap() {
     return {

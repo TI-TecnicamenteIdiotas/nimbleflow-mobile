@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/products/models/product_model.dart';
+import 'package:nimbleflow/home/products/models/product_model_with_relations.dart';
 import 'package:nimbleflow/home/products/utils/product_hub_subscribers.dart';
 import 'package:nimbleflow/shared/constants/global_keys_constants.dart';
 
@@ -9,7 +9,7 @@ import '../../shared/widgets/loading_dialog_widget.dart';
 import 'widgets/list_of_products_widget.dart';
 
 class ProductsModulePage extends StatefulWidget {
-  final List<ProductModel> listOfProducts;
+  final List<ProductModelWithRelations> listOfProducts;
   final bool isLoading;
 
   const ProductsModulePage(this.listOfProducts, this.isLoading, {super.key});

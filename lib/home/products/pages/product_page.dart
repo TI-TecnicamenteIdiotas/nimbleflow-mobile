@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../models/product_model.dart';
+import '../models/product_model_with_relations.dart';
 import '../widgets/product_detailed_widget.dart';
 
 class ProductPage extends StatefulWidget {
-  final ProductModel product;
+  final ProductModelWithRelations product;
 
   const ProductPage(this.product, {super.key});
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
+import 'package:nimbleflow/home/products/models/product_model_with_relations.dart';
 import 'package:nimbleflow/home/utils/home_module_builder.dart';
 import 'package:nimbleflow/home/utils/hub_handlers.dart';
 import 'package:nimbleflow/home/orders/orders_page.dart';
@@ -7,7 +8,6 @@ import 'package:nimbleflow/home/categories/categories_module_page.dart';
 import 'package:nimbleflow/home/tables/tables_module_page.dart';
 import 'package:nimbleflow/shared/storage/storage.dart';
 
-import 'products/models/product_model.dart';
 import 'products/products_module_page.dart';
 import 'tables/models/table_model.dart';
 
@@ -22,7 +22,7 @@ class _HomeModulePageState extends State<HomeModulePage> {
   var navigationBarCurrentIndex = 0;
 
   final listOfCategories = List<CategoryModel>.empty(growable: true);
-  final listOfProducts = List<ProductModel>.empty(growable: true);
+  final listOfProducts = List<ProductModelWithRelations>.empty(growable: true);
   final listOfTables = List<TableModel>.empty(growable: true);
 
   bool isLoading = false;

@@ -65,6 +65,7 @@ class Storage {
           $kOrderProductTableName(
             orderId TEXT,
             productId TEXT,
+            productAmount INTEGER,
             FOREIGN KEY (orderId) REFERENCES "$kOrderTableName" (id) ON DELETE CASCADE,
             FOREIGN KEY (productId) REFERENCES $kProductTableName (id) ON DELETE CASCADE
           )""",

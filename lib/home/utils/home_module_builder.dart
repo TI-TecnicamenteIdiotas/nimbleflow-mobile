@@ -2,8 +2,9 @@ import 'package:nimbleflow/home/categories/services/category_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../shared/constants/storage_constants.dart';
+import '../../shared/storage/query_builders.dart';
 import '../categories/models/category_model.dart';
-import '../products/models/product_model.dart';
+import '../products/models/product_model_with_relations.dart';
 import '../products/services/product_service.dart';
 import '../tables/models/table_model.dart';
 import '../tables/services/table_service.dart';
@@ -15,7 +16,7 @@ class HomeModuleBuilder {
   final int page = 0;
 
   final List<CategoryModel> listOfCategories;
-  final List<ProductModel> listOfProducts;
+  final List<ProductModelWithRelations> listOfProducts;
   final List<TableModel> listOfTables;
 
   HomeModuleBuilder(
@@ -63,7 +64,15 @@ class HomeModuleBuilder {
       await batch.commit(noResult: true);
     });
 
-    listOfProducts.addAll(response.items);
+    for (var item in response.items) {
+      var queryResponse = (await storage.rawQuery(
+        buildProductWithRelationsQuery(item.id),
+      ))
+          .first;
+      var productWithRelations =
+          ProductModelWithRelations.fromStorageMap(queryResponse);
+      listOfProducts.add(productWithRelations);
+    }
   }
 
   Future<void> _initTables() async {
