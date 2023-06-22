@@ -17,6 +17,18 @@ class ProductModel {
     required this.categoryId,
   });
 
+  Map<String, dynamic> toStorageMap() {
+    return {
+      "id": id,
+      "title": title,
+      "description": description,
+      "price": price,
+      "imageUrl": imageUrl,
+      "isFavorite": isFavorite ? 1 : 0,
+      "categoryId": categoryId,
+    };
+  }
+
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json["id"],

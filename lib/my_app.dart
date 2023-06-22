@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home/home_page.dart';
+import 'home/home_module_page.dart';
 import 'shared/constants/global_keys_constants.dart';
 import 'shared/constants/layout_constants.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           elevation: 2,
         )
       ),
-      home: const HomePage(),
+      home: const HomeModulePage(),
     );
   }
 }

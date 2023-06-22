@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nimbleflow/home/categories/utils/hub_subscribers.dart';
-import 'package:nimbleflow/home/categories/utils/init_categories.dart';
+import 'package:nimbleflow/home/categories/utils/category_hub_subscribers.dart';
 import 'package:nimbleflow/home/categories/widgets/list_of_categories_widget.dart';
 import 'package:nimbleflow/shared/constants/global_keys_constants.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
@@ -10,7 +9,11 @@ import 'package:nimbleflow/shared/storage/storage.dart';
 import '../../shared/widgets/loading_dialog_widget.dart';
 
 class CategoriesModulePage extends StatefulWidget {
-  const CategoriesModulePage({super.key});
+  final List<CategoryModel> listOfCategories;
+  final bool isLoading;
+
+  const CategoriesModulePage(this.listOfCategories, this.isLoading,
+      {super.key});
 
   @override
   State<CategoriesModulePage> createState() => _CategoriesModulePageState();
@@ -19,23 +22,15 @@ class CategoriesModulePage extends StatefulWidget {
 class _CategoriesModulePageState extends State<CategoriesModulePage> {
   late final CategoryHubSubscriber categoryHubSubscriber;
 
-  bool isLoading = false;
-  final listOfCategories = List<CategoryModel>.empty(growable: true);
-
-  void setIsLoading(bool value) => setState(() => isLoading = value);
-
   @override
   void initState() {
     super.initState();
-    var page = 0;
-
     categoryHubSubscriber = CategoryHubSubscriber(
-      listOfCategories,
+      widget.listOfCategories,
       HubService.mainHubConnection,
       Storage.storage,
       setState,
     );
-    initCategories(listOfCategories, page, setIsLoading);
   }
 
   @override
@@ -54,8 +49,10 @@ class _CategoriesModulePageState extends State<CategoriesModulePage> {
         navigatorKey: kCategoriesModuleNavigatorKey,
         home: Builder(
           builder: (_) {
-            if (isLoading) return const Center(child: LoadingDialogWidget());
-            return ListOfCategoriesWidget(listOfCategories);
+            if (widget.isLoading) {
+              return const Center(child: LoadingDialogWidget());
+            }
+            return ListOfCategoriesWidget(widget.listOfCategories);
           },
         ),
       ),

@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:nimbleflow/home/categories/models/category_model.dart';
+import 'package:nimbleflow/home/utils/home_module_builder.dart';
 import 'package:nimbleflow/home/utils/hub_handlers.dart';
 import 'package:nimbleflow/home/orders/orders_page.dart';
 import 'package:nimbleflow/home/categories/categories_module_page.dart';
-import 'package:nimbleflow/home/products/products_page.dart';
 import 'package:nimbleflow/home/tables/tables_module_page.dart';
+import 'package:nimbleflow/shared/storage/storage.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+import 'products/models/product_model.dart';
+import 'products/products_module_page.dart';
+import 'tables/models/table_model.dart';
+
+class HomeModulePage extends StatefulWidget {
+  const HomeModulePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeModulePage> createState() => _HomeModulePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeModulePageState extends State<HomeModulePage> {
   var navigationBarCurrentIndex = 0;
+
+  final listOfCategories = List<CategoryModel>.empty(growable: true);
+  final listOfProducts = List<ProductModel>.empty(growable: true);
+  final listOfTables = List<TableModel>.empty(growable: true);
+
+  bool isLoading = false;
+
+  void setIsLoading(bool value) => setState(() => isLoading = value);
 
   void changeSelectedModule(int index) {
     setState(() => navigationBarCurrentIndex = index);
@@ -25,6 +39,13 @@ class _HomePageState extends State<HomePage> {
     handleHubConnectionClosed(context);
     handleHubReconnection(context);
     handleHubReconnected(context);
+    HomeModuleBuilder(
+      Storage.storage,
+      listOfCategories,
+      listOfProducts,
+      listOfTables,
+      setIsLoading,
+    ).start();
   }
 
   @override
@@ -32,11 +53,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: IndexedStack(
         index: navigationBarCurrentIndex,
-        children: const [
-          TablesModulePage(),
-          OrdersPage(),
-          ProductsPage(),
-          CategoriesModulePage(),
+        children: [
+          TablesModulePage(listOfTables, isLoading),
+          const OrdersPage(),
+          ProductsModulePage(listOfProducts, isLoading),
+          CategoriesModulePage(listOfCategories, isLoading),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

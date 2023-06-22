@@ -35,7 +35,7 @@ class Storage {
             price REAL NOT NULL,
             imageUrl TEXT NULL,
             isFavorite INTEGER NOT NULL,
-            FOREIGN KEY (categoryId) REFERENCES $kCategoryTableName (id)
+            FOREIGN KEY (categoryId) REFERENCES $kCategoryTableName (id) ON DELETE CASCADE
           )""",
         );
 
@@ -56,7 +56,7 @@ class Storage {
             orderDate TEXT,
             paymentMethod TEXT,
             active INTEGER,
-            FOREIGN KEY (tableId) REFERENCES "$kTableTableName" (id)
+            FOREIGN KEY (tableId) REFERENCES "$kTableTableName" (id) ON DELETE CASCADE
           )""",
         );
 
@@ -65,8 +65,8 @@ class Storage {
           $kOrderProductTableName(
             orderId TEXT,
             productId TEXT,
-            FOREIGN KEY (orderId) REFERENCES "$kOrderTableName" (id),
-            FOREIGN KEY (productId) REFERENCES $kProductTableName (id)
+            FOREIGN KEY (orderId) REFERENCES "$kOrderTableName" (id) ON DELETE CASCADE,
+            FOREIGN KEY (productId) REFERENCES $kProductTableName (id) ON DELETE CASCADE
           )""",
         );
       },
