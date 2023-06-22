@@ -20,6 +20,9 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           backgroundColor: colorScheme.inversePrimary,
         ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          elevation: 2,
+        )
       ),
       home: const HomePage(),
     );

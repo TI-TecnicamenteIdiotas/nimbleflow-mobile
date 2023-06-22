@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/categories/dtos/update_category_dto.dart';
 import 'package:nimbleflow/home/categories/models/category_model.dart';
 
-import '../../../shared/constants/list_of_icons_constants.dart';
+import '../../../shared/constants/layout_constants.dart';
 import '../../../shared/widgets/delete_button_widget.dart';
 import '../../../shared/widgets/save_button_widget.dart';
 import '../../../shared/widgets/vertical_floating_action_buttons.dart';
@@ -41,7 +41,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
     await CategoryService.httpPutCategory(UpdateCategoryDto(
       id: category.id,
-      title: category.title,
+      title: titleTextEditingController.text,
       categoryIcon: category.categoryIcon,
       colorTheme: category.colorTheme,
     ));
@@ -51,6 +51,50 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Future<void> delete() async {
     await CategoryService.httpDeleteCategory(category.id);
+  }
+
+  DropdownButton buildColorThemeDropDownButton() {
+    var value = switch (category.colorTheme) {
+      null => kListOfColors[0],
+      _ => kListOfColors[category.colorTheme!],
+    };
+
+    return DropdownButton<Color>(
+      hint: const Text("Cor da categoria"),
+      isExpanded: true,
+      value: value,
+      items: kListOfColors.map(
+        (element) {
+          return DropdownMenuItem<Color>(
+            value: element,
+            child: Container(color: element, height: 20),
+          );
+        },
+      ).toList(),
+      onChanged: setColorTheme,
+    );
+  }
+
+  DropdownButton buildCategoryIconDropDownButton() {
+    var value = switch (category.categoryIcon) {
+      null => kListOfIcons[0],
+      _ => kListOfIcons[category.categoryIcon!]
+    };
+
+    return DropdownButton<IconData>(
+      hint: const Text("Ícone da categoria"),
+      isExpanded: true,
+      value: value,
+      items: kListOfIcons.map(
+        (element) {
+          return DropdownMenuItem<IconData>(
+            value: element,
+            child: Icon(element),
+          );
+        },
+      ).toList(),
+      onChanged: setCategoryIcon,
+    );
   }
 
   @override
@@ -87,7 +131,7 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const SizedBox.shrink()),
+      appBar: AppBar(),
       body: Form(
         key: formKey,
         child: Center(
@@ -100,39 +144,9 @@ class _CategoryPageState extends State<CategoryPage> {
                   textEditingController: titleTextEditingController,
                 ),
                 const SizedBox(height: 24),
-                DropdownButton<Color>(
-                  hint: const Text("Cor da categoria"),
-                  isExpanded: true,
-                  value: category.colorTheme == null
-                      ? null
-                      : kListOfColors[category.colorTheme!],
-                  items: kListOfColors.map(
-                    (element) {
-                      return DropdownMenuItem<Color>(
-                        value: element,
-                        child: Container(color: element, height: 20),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: setColorTheme,
-                ),
+                buildColorThemeDropDownButton(),
                 const SizedBox(height: 24),
-                DropdownButton<IconData>(
-                  hint: const Text("Ícone da categoria"),
-                  isExpanded: true,
-                  value: category.categoryIcon == null
-                      ? null
-                      : kListOfIcons[category.categoryIcon!],
-                  items: kListOfIcons.map(
-                    (element) {
-                      return DropdownMenuItem<IconData>(
-                        value: element,
-                        child: Icon(element),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: setCategoryIcon,
-                )
+                buildCategoryIconDropDownButton(),
               ],
             ),
           ),

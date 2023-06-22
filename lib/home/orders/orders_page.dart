@@ -11,9 +11,7 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pedidos"),
-      ),
+      appBar: AppBar(title: const Text("Pedidos")),
     );
   }
 }

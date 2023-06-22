@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nimbleflow/home/categories/services/category_service.dart';
-import 'package:nimbleflow/shared/constants/list_of_icons_constants.dart';
+import 'package:nimbleflow/shared/constants/layout_constants.dart';
 import 'package:nimbleflow/shared/widgets/vertical_floating_action_buttons.dart';
 
 import '../../../shared/widgets/cancel_button_widget.dart';
@@ -48,6 +48,40 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
     return true;
   }
 
+  DropdownButton buildColorThemeDropDownButton() {
+    return DropdownButton<Color>(
+      hint: const Text("Cor da categoria"),
+      isExpanded: true,
+      value: colorTheme == null ? null : kListOfColors[colorTheme!],
+      items: kListOfColors.map(
+        (element) {
+          return DropdownMenuItem<Color>(
+            value: element,
+            child: Container(color: element, height: 20),
+          );
+        },
+      ).toList(),
+      onChanged: setColorTheme,
+    );
+  }
+
+  DropdownButton buildCategoryIconDropDownButton() {
+    return DropdownButton<IconData>(
+      hint: const Text("Ícone da categoria"),
+      isExpanded: true,
+      value: categoryIcon == null ? null : kListOfIcons[categoryIcon!],
+      items: kListOfIcons.map(
+        (element) {
+          return DropdownMenuItem<IconData>(
+            value: element,
+            child: Icon(element),
+          );
+        },
+      ).toList(),
+      onChanged: setCategoryIcon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,36 +98,9 @@ class _CreateCategoryPageState extends State<CreateCategoryPage> {
                   textEditingController: titleTextEditingController,
                 ),
                 const SizedBox(height: 24),
-                DropdownButton<Color>(
-                  hint: const Text("Cor da categoria"),
-                  isExpanded: true,
-                  value: colorTheme == null ? null : kListOfColors[colorTheme!],
-                  items: kListOfColors.map(
-                    (element) {
-                      return DropdownMenuItem<Color>(
-                        value: element,
-                        child: Container(color: element, height: 20),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: setColorTheme,
-                ),
+                buildColorThemeDropDownButton(),
                 const SizedBox(height: 24),
-                DropdownButton<IconData>(
-                  hint: const Text("Ícone da categoria"),
-                  isExpanded: true,
-                  value:
-                      categoryIcon == null ? null : kListOfIcons[categoryIcon!],
-                  items: kListOfIcons.map(
-                    (element) {
-                      return DropdownMenuItem<IconData>(
-                        value: element,
-                        child: Icon(element),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: setCategoryIcon,
-                )
+                buildCategoryIconDropDownButton(),
               ],
             ),
           ),

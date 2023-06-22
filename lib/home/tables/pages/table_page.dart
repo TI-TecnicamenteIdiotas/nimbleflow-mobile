@@ -73,7 +73,7 @@ class _TablePageState extends State<TablePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const SizedBox.shrink()),
+      appBar: AppBar(),
       body: Form(
         key: formKey,
         autovalidateMode: AutovalidateMode.disabled,

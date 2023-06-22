@@ -12,7 +12,7 @@ class ListOfTablesListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       key: ValueKey<String>(table.id),
-      elevation: 2,
+      elevation: 1,
       child: ListTile(
         title: Text(table.accountable),
         onTap: () {
