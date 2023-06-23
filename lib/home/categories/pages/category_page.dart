@@ -49,7 +49,7 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   Future<void> delete() async {
-    await CategoryService.httpDeleteCategory(widget.category.title);
+    await CategoryService.httpDeleteCategory(widget.category.id);
   }
 
   @override
