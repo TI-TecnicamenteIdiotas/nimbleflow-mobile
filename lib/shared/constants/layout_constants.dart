@@ -13,3 +13,5 @@ final List<Color> kListOfColors = [
   kColorScheme.onPrimaryContainer,
   kColorScheme.onSecondaryContainer,
 ];
+
+const String kImageNotFoundAssetPath = "assets/images/image_not_found.png";

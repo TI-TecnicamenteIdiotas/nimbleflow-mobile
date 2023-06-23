@@ -56,7 +56,7 @@ class _HomeModulePageState extends State<HomeModulePage> {
         children: [
           TablesModulePage(listOfTables, isLoading),
           const OrdersPage(),
-          ProductsModulePage(listOfProducts, isLoading),
+          ProductsModulePage(listOfProducts, listOfCategories, isLoading),
           CategoriesModulePage(listOfCategories, isLoading),
         ],
       ),

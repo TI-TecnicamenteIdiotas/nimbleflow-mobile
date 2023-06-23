@@ -11,8 +11,8 @@ class ColorThemeDropDownButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<Color>(
-      hint: const Text("Cor da categoria"),
+    return DropdownButtonFormField<Color>(
+      decoration: const InputDecoration(label: Text("Cor da categoria")),
       isExpanded: true,
       value: colorTheme == null ? null : kListOfColors[colorTheme!],
       items: kListOfColors.map(

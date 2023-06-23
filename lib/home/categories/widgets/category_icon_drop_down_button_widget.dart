@@ -11,8 +11,8 @@ class CategoryIconDropDownButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<IconData>(
-      hint: const Text("Ícone da categoria"),
+    return DropdownButtonFormField<IconData>(
+      decoration: const InputDecoration(label: Text("Ícone da categoria")),
       isExpanded: true,
       value: categoryIcon == null ? null : kListOfIcons[categoryIcon!],
       items: kListOfIcons.map(

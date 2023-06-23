@@ -6,13 +6,17 @@ import 'package:nimbleflow/shared/constants/global_keys_constants.dart';
 import '../../shared/services/hub_service.dart';
 import '../../shared/storage/storage.dart';
 import '../../shared/widgets/loading_dialog_widget.dart';
+import '../categories/models/category_model.dart';
 import 'widgets/list_of_products_widget.dart';
 
 class ProductsModulePage extends StatefulWidget {
   final List<ProductModelWithRelations> listOfProducts;
+  final List<CategoryModel> listOfCategories;
   final bool isLoading;
 
-  const ProductsModulePage(this.listOfProducts, this.isLoading, {super.key});
+  const ProductsModulePage(
+      this.listOfProducts, this.listOfCategories, this.isLoading,
+      {super.key});
 
   @override
   State<ProductsModulePage> createState() => _ProductsModulePageState();
@@ -24,9 +28,9 @@ class _ProductsModulePageState extends State<ProductsModulePage> {
   @override
   void initState() {
     super.initState();
-
     productHubSubscribers = ProductHubSubscriber(
       widget.listOfProducts,
+      widget.listOfCategories,
       HubService.mainHubConnection,
       Storage.storage,
       setState,
@@ -52,7 +56,10 @@ class _ProductsModulePageState extends State<ProductsModulePage> {
             if (widget.isLoading) {
               return const Center(child: LoadingDialogWidget());
             }
-            return ListOfProductsWidget(widget.listOfProducts);
+            return ListOfProductsWidget(
+              widget.listOfProducts,
+              widget.listOfCategories,
+            );
           },
         ),
       ),

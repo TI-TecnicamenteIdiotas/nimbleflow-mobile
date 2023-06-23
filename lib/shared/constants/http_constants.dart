@@ -29,3 +29,11 @@ final kOrderServiceUrl = [
   kOrderBaseServiceUrl,
   "api/v1/order",
 ].join("/");
+
+const String kUploadBaseServiceUrl = String.fromEnvironment(
+  "UPLOAD_BASE_SERVICE_URL",
+);
+final kUploadServiceUrl = [
+  kUploadBaseServiceUrl,
+  "api/v1/upload",
+].join("/");

@@ -3,35 +3,14 @@ import 'package:nimbleflow/home/products/models/product_model_with_relations.dar
 import 'package:nimbleflow/home/products/pages/product_page.dart';
 
 import '../../../shared/layout_utils.dart';
+import '../../categories/models/category_model.dart';
 
 class ListOfProductsListItemWidget extends StatelessWidget {
   final ProductModelWithRelations product;
+  final List<CategoryModel> listOfCategories;
 
-  const ListOfProductsListItemWidget(this.product, {super.key});
-
-  Widget buildNetworkImage() {
-    var fallbackImage = const FlutterLogo(size: 64.0);
-
-    if (product.imageUrl == null || product.imageUrl!.isEmpty) {
-      return fallbackImage;
-    }
-
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: Image.network(
-        product.imageUrl!,
-        errorBuilder: (_, __, ___) => fallbackImage,
-        loadingBuilder: (_, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-
-          return const CircularProgressIndicator();
-        },
-        height: 64,
-        width: 64,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
+  const ListOfProductsListItemWidget(this.product, this.listOfCategories,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +23,10 @@ class ListOfProductsListItemWidget extends StatelessWidget {
       shadowColor: color,
       elevation: 1,
       child: ListTile(
-        leading: buildNetworkImage(),
+        leading: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          child: getImageByUrl(product.imageUrl, 64),
+        ),
         title: Text(product.title),
         subtitle: Text(
           "R\$ ${product.price.toStringAsFixed(2).padLeft(5, "0")}",
@@ -56,7 +38,7 @@ class ListOfProductsListItemWidget extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage(product),
+              builder: (context) => ProductPage(product, listOfCategories),
             ),
           );
         },

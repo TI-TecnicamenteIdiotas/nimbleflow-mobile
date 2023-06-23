@@ -18,62 +18,54 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  late final CategoryModel category;
-
   final formKey = GlobalKey<FormState>();
   final titleTextEditingController = TextEditingController();
+  int? categoryIcon;
+  int? colorTheme;
 
   void setCategoryIcon(IconData? value) {
     if (value == null) return;
 
-    setState(() => category.categoryIcon = kListOfIcons.indexOf(value));
+    setState(() => categoryIcon = kListOfIcons.indexOf(value));
   }
 
   void setColorTheme(Color? value) {
     if (value == null) return;
 
-    setState(() => category.colorTheme = kListOfColors.indexOf(value));
+    setState(() => colorTheme = kListOfColors.indexOf(value));
   }
 
   Future<bool> save() async {
     if (!formKey.currentState!.validate()) return false;
 
     await CategoryService.httpPutCategory(UpdateCategoryDto(
-      id: category.id,
+      id: widget.category.id,
       title: titleTextEditingController.text,
-      categoryIcon: category.categoryIcon,
-      colorTheme: category.colorTheme,
+      categoryIcon: categoryIcon,
+      colorTheme: colorTheme,
     ));
 
     return true;
   }
 
   Future<void> delete() async {
-    await CategoryService.httpDeleteCategory(category.id);
+    await CategoryService.httpDeleteCategory(widget.category.title);
   }
 
   @override
   void initState() {
     super.initState();
-    category = CategoryModel(
-      id: widget.category.id,
-      title: widget.category.title,
-      categoryIcon: widget.category.categoryIcon,
-      colorTheme: widget.category.colorTheme,
-    );
-
-    titleTextEditingController.text = category.title;
+    titleTextEditingController.text = widget.category.title;
+    categoryIcon = widget.category.categoryIcon;
+    colorTheme = widget.category.colorTheme;
   }
 
   @override
   void didUpdateWidget(covariant CategoryPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    category
-      ..title = widget.category.title
-      ..categoryIcon = widget.category.categoryIcon
-      ..colorTheme = widget.category.colorTheme;
-
-    titleTextEditingController.text = category.title;
+    titleTextEditingController.text = widget.category.title;
+    categoryIcon = widget.category.categoryIcon;
+    colorTheme = widget.category.colorTheme;
   }
 
   @override
@@ -88,9 +80,9 @@ class _CategoryPageState extends State<CategoryPage> {
     return CategoryDetailed(
       formKey: formKey,
       titleTextEditingController: titleTextEditingController,
-      colorTheme: category.colorTheme,
+      colorTheme: colorTheme,
       setColorTheme: setColorTheme,
-      categoryIcon: category.categoryIcon,
+      categoryIcon: categoryIcon,
       setCategoryIcon: setCategoryIcon,
       floatingActionButtons: [
         SaveButtonWidget(onPressed: save),

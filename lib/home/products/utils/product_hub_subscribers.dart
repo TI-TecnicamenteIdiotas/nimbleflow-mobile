@@ -13,12 +13,14 @@ import '../models/product_model_with_relations.dart';
 
 class ProductHubSubscriber {
   final List<ProductModelWithRelations> listOfProductsWithRelations;
+  final List<CategoryModel> listOfCategories;
   final HubConnection hubConnection;
   final Database storage;
   final void Function(void Function()) setState;
 
   ProductHubSubscriber(
     this.listOfProductsWithRelations,
+    this.listOfCategories,
     this.hubConnection,
     this.storage,
     this.setState,
@@ -27,6 +29,7 @@ class ProductHubSubscriber {
     subscribeToProductUpdated();
     subscribeToProductDeleted();
     subscribeToManyProductsDeleted();
+    subscribeToProductCategoryCreated();
     subscribeToProductCategoryUpdated();
     subscribeToManyProductsCategoriesDeleted();
     subscribeToProductCategoryDeleted();
@@ -142,10 +145,34 @@ class ProductHubSubscriber {
     });
   }
 
+  void subscribeToProductCategoryCreated() {
+    hubConnection.on(kProductCategoryCreated, (arguments) {
+      // var json = jsonDecode(arguments![0]);
+      // var categoryModel = CategoryModel.fromJson(json);
+      //
+      // listOfCategories.add(categoryModel);
+
+      setState(() {});
+    });
+  }
+
   void subscribeToProductCategoryUpdated() {
     hubConnection.on(kProductCategoryUpdated, (arguments) {
       var json = jsonDecode(arguments![0]);
       var categoryModel = CategoryModel.fromJson(json);
+
+      // var categoryToUpdate = listOfCategories
+      //     .where(
+      //       (element) => element.id == categoryModel.id,
+      //     )
+      //     .firstOrNull;
+      //
+      // if (categoryToUpdate != null) {
+      //   categoryToUpdate
+      //     ..title = categoryModel.title
+      //     ..colorTheme = categoryModel.colorTheme
+      //     ..categoryIcon = categoryModel.categoryIcon;
+      // }
 
       var listOfProductsToUpdate = listOfProductsWithRelations.where(
         (element) => element.category.id == categoryModel.id,
@@ -169,6 +196,10 @@ class ProductHubSubscriber {
       var json = jsonDecode(arguments![0]) as Map<String, dynamic>;
       var deletedCategoriesIds = List<String>.from(json["ids"]);
 
+      // listOfCategories.removeWhere(
+      //   (element) => deletedCategoriesIds.contains(element.id),
+      // );
+
       listOfProductsWithRelations.removeWhere((element) {
         return deletedCategoriesIds.contains(element.category.id);
       });
@@ -181,6 +212,10 @@ class ProductHubSubscriber {
     hubConnection.on(kProductCategoryDeleted, (arguments) {
       var json = jsonDecode(arguments![0]);
       var deletedCategoryId = json["id"] as String;
+
+      // listOfCategories.removeWhere(
+      //   (element) => element.id == deletedCategoryId,
+      // );
 
       listOfProductsWithRelations.removeWhere((element) {
         return element.category.id == deletedCategoryId;
@@ -196,6 +231,7 @@ class ProductHubSubscriber {
       ..off(kProductUpdatedEventName)
       ..off(kManyProductsDeletedEventName)
       ..off(kProductDeletedEventName)
+      ..off(kCategoryCreatedEventName)
       ..off(kCategoryUpdatedEventName)
       ..off(kManyCategoriesDeletedEventName)
       ..off(kCategoryDeletedEventName);
